@@ -1,7 +1,7 @@
-import { text, pgTable, uuid } from "drizzle-orm/pg-core";
+import { text, pgTable, uuid, boolean } from "drizzle-orm/pg-core";
 
-export const characters = pgTable("characters", {
+export const cards = pgTable("cards", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
-  nickname: text("nickname").notNull(),
+  isTemplate: boolean("isTemplate").notNull(),
+  fields: text("fields").notNull(),
 });
