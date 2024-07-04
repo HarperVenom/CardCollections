@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@edgestore/react": "^0.1.7",
+    "@edgestore/server": "^0.1.7",
     "@neondatabase/serverless": "^0.9.4",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.31.2",

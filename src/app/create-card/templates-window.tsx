@@ -2,14 +2,14 @@
 import { useContext } from "react";
 import { ConvertedCardType } from "../../../types/types";
 import Card from "../../components/card";
-import { FormFieldsContext } from "./context";
+import { CardContext } from "./context";
 
 export default function TemplateWindow({
   onTemplateChoose,
 }: {
   onTemplateChoose: (template: ConvertedCardType) => void;
 }) {
-  const { templates } = useContext(FormFieldsContext);
+  const { templates } = useContext(CardContext);
 
   return (
     <div className="absolute flex overflow-auto h-1/2 w-screen top-0 left-0 bg-gray-400">

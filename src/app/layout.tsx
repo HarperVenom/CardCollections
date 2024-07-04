@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { lato } from "./ui/fonts";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.className} bg-gray-200 min-h-screen`}>
-        {children}
+        <EdgeStoreProvider>{children}</EdgeStoreProvider>
       </body>
     </html>
   );

@@ -1,17 +1,17 @@
 "use client";
 
 import { createContext, useState } from "react";
-import { CardFields, ConvertedCardType } from "../../../types/types";
+import { ConvertedCardType } from "../../../types/types";
 
 interface CardContext {
-  cardFields: CardFields;
-  setCardFields: React.Dispatch<React.SetStateAction<CardFields>>;
+  card: ConvertedCardType;
+  setCard: React.Dispatch<React.SetStateAction<ConvertedCardType>>;
   templates: ConvertedCardType[];
 }
 
-export const FormFieldsContext = createContext<CardContext>({
-  cardFields: {},
-  setCardFields: () => {},
+export const CardContext = createContext<CardContext>({
+  card: { id: "", isTemplate: false, image: "", fields: {} },
+  setCard: () => {},
   templates: [],
 });
 
@@ -22,13 +22,16 @@ export default function FormFieldsProvider({
   children: React.ReactNode;
   templates: ConvertedCardType[];
 }) {
-  const [cardFields, setCardFields] = useState<CardFields>({});
+  const [card, setCard] = useState<ConvertedCardType>({
+    id: "",
+    isTemplate: false,
+    image: "",
+    fields: {},
+  });
 
   return (
-    <FormFieldsContext.Provider
-      value={{ cardFields, setCardFields, templates }}
-    >
+    <CardContext.Provider value={{ card, setCard, templates }}>
       {children}
-    </FormFieldsContext.Provider>
+    </CardContext.Provider>
   );
 }

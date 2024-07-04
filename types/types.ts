@@ -6,7 +6,29 @@ export type CardType = {
 
 export type ConvertedCardType = {
   id: string;
-  isTemplate: boolean;
+  title?: {
+    value: string;
+    properties: string[];
+  };
+  image?: {
+    url: string;
+    properties?: string[];
+  };
+  description?: {
+    value: string;
+    color?: string;
+  };
+  fields?: {
+    [key: string]: string;
+  };
+  category?: string;
+  color?: string;
+  font1?: string;
+  font2?: string;
+  rarity: string;
+};
+
+export type FieldsTemplate = {
   fields: {
     [key: string]: string;
   };
