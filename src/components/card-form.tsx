@@ -1,10 +1,20 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import { CardFields, ConvertedCardType } from "../../types/types";
+import { CardFields, CardSettings, ConvertedCardType } from "../../types/types";
 import TemplateWindow from "../app/create-card/templates-window";
 import { CardContext } from "@/app/create-card/context";
 import { useEdgeStore } from "@/lib/edgestore";
+import {
+  bebasNeue,
+  comicNeue,
+  lato,
+  oswald,
+  permanentMarker,
+  roboto,
+  robotoSlab,
+} from "@/app/ui/fonts";
+import "@/app/create-card/form.css";
 
 interface FormErrors {
   name?: string[];
@@ -38,28 +48,25 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   const [templateWindowOpened, setTemplateWindowOpened] = useState(false);
   const [templateApplied, setTemplateApplied] = useState(false);
 
-  const [formEntries, setFormEntries] = useState<FormEntry[]>([
-    ...Object.entries(card.fields!).map(([key, value], i) => ({
-      id: i,
-      name: key,
-      value: value,
-    })),
-  ]);
-
+  const [title, setTitle] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const [description, setDescription] = useState<string>("");
+  const [attributes, setAttributes] = useState<FormEntry[]>([]);
+  const [category, setCategory] = useState<string>("");
+  const [settings, setSettings] = useState<CardSettings>({
+    font1: "Lato",
+    font2: "Lato",
+  });
+  const [rarity, setRarity] = useState<string>("common");
+
   const { edgestore } = useEdgeStore();
 
   useEffect(() => {
     setCard((prev) => ({
       ...prev,
-      fields: {
-        ...formEntries.reduce((acc, field) => {
-          acc[field.name] = field.value;
-          return acc;
-        }, {} as CardFields),
-      },
+      title: { ...(prev.title && prev.title), value: title },
     }));
-  }, [formEntries]);
+  }, [title]);
 
   useEffect(() => {
     if (!image) return;
@@ -74,6 +81,53 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
       };
     }
   }, [image]);
+
+  useEffect(() => {
+    setCard((prev) => ({
+      ...prev,
+      description: {
+        ...(prev.description && prev.description),
+        value: description,
+      },
+    }));
+  }, [description]);
+
+  useEffect(() => {
+    if (attributes.length === 0) return;
+    setCard((prev) => ({
+      ...prev,
+      attributes: {
+        ...attributes.reduce((acc, field) => {
+          acc[field.name] = field.value;
+          return acc;
+        }, {} as CardFields),
+      },
+    }));
+  }, [attributes]);
+
+  useEffect(() => {
+    setCard((prev) => ({
+      ...prev,
+      category: {
+        ...(prev.category && prev.category),
+        value: category,
+      },
+    }));
+  }, [category]);
+
+  useEffect(() => {
+    setCard((prev) => ({
+      ...prev,
+      settings: settings,
+    }));
+  }, [settings]);
+
+  useEffect(() => {
+    setCard((prev) => ({
+      ...prev,
+      rarity: rarity,
+    }));
+  }, [rarity]);
 
   // useEffect(() => {
   //   (async () => {
@@ -94,63 +148,79 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   // }, [image]);
 
   function handleAddField() {
-    setFormEntries((prev) => [
+    setAttributes((prev) => [
       ...prev,
       { id: prev.length, name: "", value: "" },
     ]);
   }
 
-  function handleKeyChange(
+  function handleAttributeKeyChange(
     e: React.ChangeEvent<HTMLInputElement>,
     fieldId: number
   ) {
-    const updated = formEntries.map((field) => {
+    const updated = attributes.map((field) => {
       if (field.id === fieldId) {
         field.name = e.target.value;
       }
       return field;
     });
-    setFormEntries(updated);
+    setAttributes(updated);
   }
 
-  function handleValueChange(
+  function handleAttributeValueChange(
     e: React.ChangeEvent<HTMLInputElement>,
     fieldId: number
   ) {
-    const updated = formEntries.map((field) => {
+    const updated = attributes.map((field) => {
       if (field.id === fieldId) {
         field.value = e.target.value;
       }
       return field;
     });
-    setFormEntries(updated);
+    setAttributes(updated);
   }
 
   async function handleTemplateChoose(template: ConvertedCardType) {
-    const formEntries: FormEntry[] = Object.entries(template.fields!).map(
+    const formEntries: FormEntry[] = Object.entries(template.attributes!).map(
       ([key, value], i) => ({ id: i, name: key, value: value })
     );
 
-    setFormEntries(formEntries);
+    setAttributes(formEntries);
     setTemplateApplied(true);
     setTemplateWindowOpened(false);
   }
 
+  function handleRarityChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const rarity = e.target.value;
+    setRarity(rarity);
+  }
+
   return (
     <>
-      <form className="flex flex-col items-center p-4 m-auto" action={action}>
+      <form
+        className="flex flex-col items-center p-4 m-auto px-[5%]"
+        action={action}
+      >
         <FormSection name="Title" inputId="title">
           <input
-            className="rounded my-1 h-7 p-1 w-full text-center"
+            className="rounded-lg my-1 p-2 w-full text-center"
             type="text"
             id="title"
             name="title"
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
           />
         </FormSection>
 
         <FormSection name="Image" inputId="image">
+          <label
+            className="bg-blue-500 text-white py-1 px-4 rounded cursor-pointer"
+            htmlFor="image"
+          >
+            {card.image ? "Change Image" : "Upload Image"}
+          </label>
           <input
-            className="rounded m-auto my-1 text-center"
+            className="rounded m-auto my-1 text-center hidden"
             type="file"
             id="image"
             name="image"
@@ -160,9 +230,11 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
 
         <FormSection name="Description" inputId="description">
           <textarea
-            className="rounded my-1 p-1 w-full text-center"
+            className="rounded-lg p-2 h-36 w-full text-center flex items-center"
             name="description"
             id="description"
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
           ></textarea>
         </FormSection>
 
@@ -170,7 +242,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
           {/* Templates */}
           <div className="flex justify-center">
             <button
-              className="bg-blue-500 text-white p-1 px-2 rounded shadow-md"
+              className="bg-blue-500 text-white p-1 px-4 rounded shadow-md"
               onClick={() => setTemplateWindowOpened(true)}
               type="button"
             >
@@ -185,21 +257,21 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
 
           {/* Fields */}
           <div className="my-4 w-full">
-            {formEntries.map((field) => (
+            {attributes.map((field) => (
               <div className="flex w-full" key={field.id}>
-                <div className="flex items-center  w-1/2">
+                <div className="flex items-center w-1/2">
                   {templateApplied ? (
-                    <span>{field.name}</span>
+                    <span className="text-lg">{field.name}</span>
                   ) : (
                     <input
                       className="rounded my-1 h-7 p-1 w-full"
                       type="text"
                       name="name"
                       value={field.name}
-                      onChange={(e) => handleKeyChange(e, field.id)}
+                      onChange={(e) => handleAttributeKeyChange(e, field.id)}
                     />
                   )}
-                  <div className="mr-2">: </div>
+                  <div className="mr-2 text-2xl mb-1">: </div>
                 </div>
 
                 <div className="w-1/2">
@@ -209,7 +281,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
                     name="value"
                     id="value"
                     value={field.value}
-                    onChange={(e) => handleValueChange(e, field.id)}
+                    onChange={(e) => handleAttributeValueChange(e, field.id)}
                   />
                 </div>
               </div>
@@ -220,7 +292,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
           <div className="flex justify-center">
             {templateApplied ? (
               <button
-                className="bg-gray-400 text-white p-1 px-2 rounded shadow-md"
+                className="bg-gray-400 text-white p-1 px-4 rounded shadow-md"
                 type="button"
                 onClick={() => setTemplateApplied(false)}
               >
@@ -228,7 +300,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
               </button>
             ) : (
               <button
-                className="bg-gray-400 text-white p-1 px-2 rounded shadow-md"
+                className="bg-gray-400 text-white p-1 px-4 rounded shadow-md"
                 type="button"
                 onClick={handleAddField}
               >
@@ -240,10 +312,12 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
 
         <FormSection name="Category" inputId="category">
           <input
-            className="rounded my-1 p-1 w-full text-center"
+            className="rounded-lg my-1 p-1 w-full text-center"
             list="options"
             id="category"
             name="category"
+            onChange={(e) => setCategory(e.target.value)}
+            value={category}
           />
           <datalist id="options">
             <option value="Option 1" />
@@ -253,92 +327,179 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
         </FormSection>
 
         <FormSection name="Settings">
-          <div className="flex">
-            <div className="flex flex-col items-center">
-              <label className="font-bold" htmlFor="font1">
-                Font 1
+          <div className="flex flex-col w-full text-gray-500">
+            <div className="flex grow flex-col items-center">
+              <label className="font-bold w-full" htmlFor="font1">
+                Font 1:
               </label>
-              <input
-                className="rounded m-1 p-1 w-4/5 text-center"
-                type="select"
+              <select
+                className="rounded m-1 p-1 text-center w-full"
                 name="font1"
                 id="font1"
-              />
+                value={settings?.font1 || "Lato"}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, font1: e.target.value }))
+                }
+              >
+                <option className={`${lato.className}`} value="Lato">
+                  Lato
+                </option>
+                <option
+                  className={`${robotoSlab.className}`}
+                  value="Roboto Slab"
+                >
+                  Roboto Slab
+                </option>
+                <option className={`${bebasNeue.className}`} value="Bebas Neue">
+                  Bebas Neue
+                </option>
+                <option className={`${oswald.className}`} value="Oswald">
+                  Oswald
+                </option>
+                <option
+                  className={`${permanentMarker.className}`}
+                  value="Permanent Marker"
+                >
+                  Permanent Marker
+                </option>
+              </select>
             </div>
-            <div className="flex flex-col items-center">
-              <label className="font-bold" htmlFor="font2">
-                Font 2
+
+            <div className="flex grow flex-col items-center">
+              <label className="font-bold w-full" htmlFor="font2">
+                Font 2:
               </label>
-              <input
-                className="rounded m-1 p-1 w-4/5 text-center"
-                type="select"
+              <select
+                className="rounded m-1 p-1 text-center w-full"
                 name="font2"
                 id="font2"
-              />
+                value={settings?.font2 || "Lato"}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, font2: e.target.value }))
+                }
+              >
+                <option className={`${lato.className}`} value="Lato">
+                  Lato
+                </option>
+                <option className={`${roboto.className}`} value="Roboto">
+                  Roboto
+                </option>
+                <option className={`${comicNeue.className}`} value="Comic Neue">
+                  Comic Neue
+                </option>
+              </select>
             </div>
           </div>
-          <div className="w-full flex flex-col items-center mt-4">
-            <label className="font-bold" htmlFor="color">
-              Background
-            </label>
-            <input
-              className="rounded m-1 px-1 w-4/5 text-center"
-              type="color"
-              id="color"
-              name="color"
-            />
+          <div className="text-gray-500 w-full">
+            <div className="w-full flex flex-col items-center mt-4">
+              <label className="font-bold w-full" htmlFor="color">
+                Background:
+              </label>
+              <input
+                className="rounded m-1 w-4/5 text-center custom-color"
+                type="color"
+                id="color"
+                name="color"
+                value={settings?.color?.background || "#000000"}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    color: { ...prev.color, background: e.target.value },
+                  }))
+                }
+              />
+            </div>
+
+            <div className="w-full flex flex-col items-center">
+              <label className="font-bold w-full" htmlFor="color">
+                Content:
+              </label>
+              <input
+                className="rounded m-1 px-1 w-4/5 text-center custom-color"
+                type="color"
+                id="color"
+                name="color"
+                value={settings?.color?.content || "#000000"}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    color: { ...prev.color, content: e.target.value },
+                  }))
+                }
+              />
+            </div>
+
+            <div className="w-full flex flex-col items-center">
+              <label className="font-bold w-full" htmlFor="color">
+                Text:
+              </label>
+              <input
+                className="rounded m-1 px-1 w-4/5 text-center custom-color"
+                type="color"
+                id="color"
+                name="color"
+                value={settings?.color?.text || "#000000"}
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    color: { ...prev.color, text: e.target.value },
+                  }))
+                }
+              />
+            </div>
           </div>
         </FormSection>
 
         <FormSection name="Rarity">
           {
             <fieldset className="w-full flex justify-center">
-              <label
-                className="w-8 h-8 hover:outline bg-white
-                rounded-full outline-gray-500 pointer-events-none mx-2"
-              >
-                <input
-                  className="w-full h-full opacity-0 cursor-pointer pointer-events-auto"
-                  type="radio"
-                  name="rarity"
-                  value="common"
-                />
-              </label>
-              <label
-                className="w-8 h-8 hover:outline bg-green-500
-                rounded-full outline-gray-500 pointer-events-none mx-2"
-              >
-                <input
-                  className="w-full h-full opacity-0 cursor-pointer pointer-events-auto"
-                  type="radio"
-                  name="rarity"
-                  value="rare"
-                />
-              </label>
-              <label
-                className="w-8 h-8 hover:outline bg-purple-500
-                rounded-full outline-gray-500 pointer-events-none mx-2"
-              >
-                <input
-                  className="w-full h-full opacity-0 cursor-pointer pointer-events-auto"
-                  type="radio"
-                  name="rarity"
-                  value="epic"
-                />
-              </label>
-              <label
-                className="w-8 h-8 hover:outline bg-yellow-500
-                rounded-full outline-gray-500 pointer-events-none mx-2"
-              >
-                <input
-                  className="w-full h-full opacity-0 cursor-pointer pointer-events-auto"
-                  type="radio"
-                  name="rarity"
-                  value="legendary"
-                />
-              </label>
+              <input
+                className="appearance-none w-8 h-8 bg-white rounded-full hover:outline
+                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
+                type="radio"
+                name="rarity"
+                value="common"
+                checked={card.rarity === "common"}
+                onChange={handleRarityChange}
+              />
+
+              <input
+                className="appearance-none w-8 h-8 bg-green-500 rounded-full hover:outline
+                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
+                type="radio"
+                name="rarity"
+                value="rare"
+                checked={card.rarity === "rare"}
+                onChange={handleRarityChange}
+              />
+
+              <input
+                className="appearance-none w-8 h-8 bg-purple-500 rounded-full hover:outline
+                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
+                type="radio"
+                name="rarity"
+                value="epic"
+                checked={card.rarity === "epic"}
+                onChange={handleRarityChange}
+              />
+
+              <input
+                className="appearance-none w-8 h-8 bg-yellow-500 rounded-full hover:outline
+                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
+                type="radio"
+                name="rarity"
+                value="legendary"
+                checked={card.rarity === "legendary"}
+                onChange={handleRarityChange}
+              />
             </fieldset>
           }
+          <div
+            className="w-full justify-center text-center
+           mt-2 font-bold"
+          >
+            {card.rarity}
+          </div>
         </FormSection>
 
         {/* <label htmlFor="name">Real Name:</label>
@@ -381,10 +542,10 @@ function FormSection({
          w-full p-4 py-10 flex flex-col items-center 
          justify-center m-1 mt-6 relative"
     >
-      <div className="w-full max-w-[300px]">
+      <div className="w-full max-w-[300px] flex flex-col items-center">
         <label
           className="font-bold text-center text-2xl absolute 
-        top-0 -translate-y-2/3 bg-gray-300 px-2 text-gray-500"
+        top-0 -translate-y-2/3 bg-gray-300 px-2 text-gray-500 self-start"
           htmlFor={inputId}
         >
           {name}

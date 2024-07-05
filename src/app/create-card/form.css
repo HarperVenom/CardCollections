@@ -1,0 +1,21 @@
+.custom-color {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  height: 2.5rem;
+  width: 100%;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+.custom-color::-webkit-color-swatch {
+  outline: 2px solid gray;
+  border-radius: 4px;
+  border: none;
+}
+.custom-color::-moz-color-swatch {
+  outline: 2px solid gray;
+  border-radius: 4px;
+  border: none;
+}

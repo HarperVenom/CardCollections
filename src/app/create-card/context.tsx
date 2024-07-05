@@ -10,7 +10,7 @@ interface CardContext {
 }
 
 export const CardContext = createContext<CardContext>({
-  card: { id: "", isTemplate: false, image: "", fields: {} },
+  card: { id: "", rarity: "common" },
   setCard: () => {},
   templates: [],
 });
@@ -24,9 +24,7 @@ export default function FormFieldsProvider({
 }) {
   const [card, setCard] = useState<ConvertedCardType>({
     id: "",
-    isTemplate: false,
-    image: "",
-    fields: {},
+    rarity: "common",
   });
 
   return (

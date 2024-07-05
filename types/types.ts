@@ -8,24 +8,35 @@ export type ConvertedCardType = {
   id: string;
   title?: {
     value: string;
-    properties: string[];
+    style?: string[];
   };
   image?: {
     url: string;
-    properties?: string[];
+    style?: string[];
   };
   description?: {
     value: string;
-    color?: string;
+    style?: string;
   };
-  fields?: {
+  attributes?: {
     [key: string]: string;
   };
-  category?: string;
-  color?: string;
+  category?: {
+    value: string;
+    style?: string;
+  };
+  settings?: CardSettings;
+  rarity: string;
+};
+
+export type CardSettings = {
   font1?: string;
   font2?: string;
-  rarity: string;
+  color?: {
+    background?: string;
+    content?: string;
+    text?: string;
+  };
 };
 
 export type FieldsTemplate = {
