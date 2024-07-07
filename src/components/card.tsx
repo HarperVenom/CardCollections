@@ -9,11 +9,9 @@ export default function Card({ data: card }: { data: ConvertedCardType }) {
         max-h-[430px] relative"
     >
       <div
-        className="absolute w-full h-full 
-      scale-105 bg-black -z-10 blur-md opacity-50 brightness-150"
-        style={{
-          background: getRarityColor(card.rarity),
-        }}
+        className={`absolute w-full h-full 
+      scale-105 -z-10 blur-md opacity-50 brightness-150
+      bg-${getRarityColor(card.rarity)}`}
       ></div>
       <div
         className={`w-full h-full bg-white rounded-xl 
@@ -37,8 +35,8 @@ export default function Card({ data: card }: { data: ConvertedCardType }) {
             {card.title && card.title.value && (
               <h1
                 className={`
-            text-center w-max max-w-[250px] max-h-12 text-lg
-          bg-gray-200 py-1 px-4 rounded-xl 
+            text-center min-w-52 w-max max-w-[250px] max-h-12 text-lg
+          bg-gray-200 py-1 px-4 rounded-full 
             overflow-hidden absolute bottom-1 left-1/2 -translate-x-1/2
             font-bold ${getFontClass(card.settings?.font1!)}
             `}
@@ -53,8 +51,8 @@ export default function Card({ data: card }: { data: ConvertedCardType }) {
         )}
         {!card.image && card.title && card.title.value && (
           <div
-            className={`text-center max-w-[200px] max-h-16 mx-auto text-lg
-          bg-gray-200 py-1 px-4 rounded-xl -mt-10 shadow-md
+            className={`text-center min-w-36 max-w-[200px] max-h-16 mx-auto text-lg
+          bg-gray-200 py-1 px-4 rounded-full -mt-10 shadow-md
           overflow-hidden font-bold ${getFontClass(card.settings?.font1!)}`}
             style={{
               backgroundColor: card.settings?.color?.content,

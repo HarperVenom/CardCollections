@@ -32,12 +32,12 @@ export function getFontClass(font: string): string {
 export function getRarityColor(rarity: string): string {
   switch (rarity) {
     case "rare":
-      return "green";
+      return "green-500";
     case "epic":
-      return "purple";
+      return "purple-500";
     case "legendary":
-      return "rgb(234 179 8)";
+      return "yellow-500";
     default:
-      return "white";
+      return "";
   }
 }

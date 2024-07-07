@@ -15,6 +15,8 @@ import {
   robotoSlab,
 } from "@/app/ui/fonts";
 import "@/app/create-card/form.css";
+import Cross from "@/assets/cross";
+import { getFontClass, getRarityColor } from "@/utils/utils";
 
 interface FormErrors {
   name?: string[];
@@ -93,7 +95,6 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   }, [description]);
 
   useEffect(() => {
-    if (attributes.length === 0) return;
     setCard((prev) => ({
       ...prev,
       attributes: {
@@ -147,11 +148,15 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   //   })();
   // }, [image]);
 
-  function handleAddField() {
+  function handleAddAttribute() {
     setAttributes((prev) => [
       ...prev,
       { id: prev.length, name: "", value: "" },
     ]);
+  }
+
+  function handleRemoveAttribute(id: number) {
+    setAttributes((prev) => prev.filter((attr) => attr.id !== id));
   }
 
   function handleAttributeKeyChange(
@@ -258,7 +263,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
           {/* Fields */}
           <div className="my-4 w-full">
             {attributes.map((field) => (
-              <div className="flex w-full" key={field.id}>
+              <div className="flex w-full items-center" key={field.id}>
                 <div className="flex items-center w-1/2">
                   {templateApplied ? (
                     <span className="text-lg">{field.name}</span>
@@ -271,9 +276,8 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
                       onChange={(e) => handleAttributeKeyChange(e, field.id)}
                     />
                   )}
-                  <div className="mr-2 text-2xl mb-1">: </div>
                 </div>
-
+                <div className="mr-2 text-2xl mb-1">: </div>
                 <div className="w-1/2">
                   <input
                     className="rounded my-1 h-7 p-1 w-full"
@@ -284,6 +288,13 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
                     onChange={(e) => handleAttributeValueChange(e, field.id)}
                   />
                 </div>
+                <button
+                  type="button"
+                  className="w-7 h-full bg-gray-400 p-1 mx-1 rounded"
+                  onClick={() => handleRemoveAttribute(field.id)}
+                >
+                  <Cross stroke="white" width={3}></Cross>
+                </button>
               </div>
             ))}
           </div>
@@ -302,7 +313,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
               <button
                 className="bg-gray-400 text-white p-1 px-4 rounded shadow-md"
                 type="button"
-                onClick={handleAddField}
+                onClick={handleAddAttribute}
               >
                 Add Field
               </button>
@@ -328,175 +339,71 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
 
         <FormSection name="Settings">
           <div className="flex flex-col w-full text-gray-500">
-            <div className="flex grow flex-col items-center">
-              <label className="font-bold w-full" htmlFor="font1">
-                Font 1:
-              </label>
-              <select
-                className="rounded m-1 p-1 text-center w-full"
-                name="font1"
-                id="font1"
-                value={settings?.font1 || "Lato"}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, font1: e.target.value }))
-                }
-              >
-                <option className={`${lato.className}`} value="Lato">
-                  Lato
-                </option>
-                <option
-                  className={`${robotoSlab.className}`}
-                  value="Roboto Slab"
-                >
-                  Roboto Slab
-                </option>
-                <option className={`${bebasNeue.className}`} value="Bebas Neue">
-                  Bebas Neue
-                </option>
-                <option className={`${oswald.className}`} value="Oswald">
-                  Oswald
-                </option>
-                <option
-                  className={`${permanentMarker.className}`}
-                  value="Permanent Marker"
-                >
-                  Permanent Marker
-                </option>
-              </select>
-            </div>
+            <Font
+              title="Font 1"
+              name="font1"
+              settings={settings}
+              setSettings={setSettings}
+              fonts={[
+                { title: "Lato", className: lato.className },
+                { title: "Roboto", className: roboto.className },
+                { title: "Bebas Neue", className: bebasNeue.className },
+                { title: "Oswald", className: oswald.className },
+                {
+                  title: "Permanent Marker",
+                  className: permanentMarker.className,
+                },
+              ]}
+            ></Font>
 
-            <div className="flex grow flex-col items-center">
-              <label className="font-bold w-full" htmlFor="font2">
-                Font 2:
-              </label>
-              <select
-                className="rounded m-1 p-1 text-center w-full"
-                name="font2"
-                id="font2"
-                value={settings?.font2 || "Lato"}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, font2: e.target.value }))
-                }
-              >
-                <option className={`${lato.className}`} value="Lato">
-                  Lato
-                </option>
-                <option className={`${roboto.className}`} value="Roboto">
-                  Roboto
-                </option>
-                <option className={`${comicNeue.className}`} value="Comic Neue">
-                  Comic Neue
-                </option>
-              </select>
-            </div>
+            <Font
+              title="Font 2"
+              name="font2"
+              settings={settings}
+              setSettings={setSettings}
+              fonts={[
+                { title: "Lato", className: lato.className },
+                { title: "Roboto", className: roboto.className },
+                { title: "Comic Neue", className: comicNeue.className },
+              ]}
+            ></Font>
           </div>
           <div className="text-gray-500 w-full">
-            <div className="w-full flex flex-col items-center mt-4">
-              <label className="font-bold w-full" htmlFor="color">
-                Background:
-              </label>
-              <input
-                className="rounded m-1 w-4/5 text-center custom-color"
-                type="color"
-                id="color"
-                name="color"
-                value={settings?.color?.background || "#000000"}
-                onChange={(e) =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    color: { ...prev.color, background: e.target.value },
-                  }))
-                }
-              />
-            </div>
+            <Color
+              name="Background"
+              type="background"
+              settings={settings}
+              setSettings={setSettings}
+            ></Color>
 
-            <div className="w-full flex flex-col items-center">
-              <label className="font-bold w-full" htmlFor="color">
-                Content:
-              </label>
-              <input
-                className="rounded m-1 px-1 w-4/5 text-center custom-color"
-                type="color"
-                id="color"
-                name="color"
-                value={settings?.color?.content || "#000000"}
-                onChange={(e) =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    color: { ...prev.color, content: e.target.value },
-                  }))
-                }
-              />
-            </div>
+            <Color
+              name="Content"
+              type="content"
+              settings={settings}
+              setSettings={setSettings}
+            ></Color>
 
-            <div className="w-full flex flex-col items-center">
-              <label className="font-bold w-full" htmlFor="color">
-                Text:
-              </label>
-              <input
-                className="rounded m-1 px-1 w-4/5 text-center custom-color"
-                type="color"
-                id="color"
-                name="color"
-                value={settings?.color?.text || "#000000"}
-                onChange={(e) =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    color: { ...prev.color, text: e.target.value },
-                  }))
-                }
-              />
-            </div>
+            <Color
+              name="Text"
+              type="text"
+              settings={settings}
+              setSettings={setSettings}
+            ></Color>
           </div>
         </FormSection>
 
         <FormSection name="Rarity">
           {
-            <fieldset className="w-full flex justify-center">
-              <input
-                className="appearance-none w-8 h-8 bg-white rounded-full hover:outline
-                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
-                type="radio"
-                name="rarity"
-                value="common"
-                checked={card.rarity === "common"}
-                onChange={handleRarityChange}
-              />
-
-              <input
-                className="appearance-none w-8 h-8 bg-green-500 rounded-full hover:outline
-                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
-                type="radio"
-                name="rarity"
-                value="rare"
-                checked={card.rarity === "rare"}
-                onChange={handleRarityChange}
-              />
-
-              <input
-                className="appearance-none w-8 h-8 bg-purple-500 rounded-full hover:outline
-                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
-                type="radio"
-                name="rarity"
-                value="epic"
-                checked={card.rarity === "epic"}
-                onChange={handleRarityChange}
-              />
-
-              <input
-                className="appearance-none w-8 h-8 bg-yellow-500 rounded-full hover:outline
-                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2"
-                type="radio"
-                name="rarity"
-                value="legendary"
-                checked={card.rarity === "legendary"}
-                onChange={handleRarityChange}
-              />
+            <fieldset className="w-full flex justify-evenly">
+              <RarityRadio rarity="common"></RarityRadio>
+              <RarityRadio rarity="rare"></RarityRadio>
+              <RarityRadio rarity="epic"></RarityRadio>
+              <RarityRadio rarity="legendary"></RarityRadio>
             </fieldset>
           }
           <div
-            className="w-full justify-center text-center
-           mt-2 font-bold"
+            className={`w-full justify-center text-center
+           mt-2 italic text-gray-500`}
           >
             {card.rarity}
           </div>
@@ -525,6 +432,22 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
       </form>
     </>
   );
+
+  function RarityRadio({ rarity }: { rarity: string }) {
+    return (
+      <input
+        className={`appearance-none w-10 h-10 bg-${
+          rarity === "common" ? "white" : getRarityColor(rarity)
+        } rounded-full hover:outline
+                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2`}
+        type="radio"
+        name="rarity"
+        value={rarity}
+        checked={card.rarity === rarity}
+        onChange={handleRarityChange}
+      />
+    );
+  }
 }
 
 function FormSection({
@@ -552,6 +475,104 @@ function FormSection({
         </label>
         {children}
       </div>
+    </div>
+  );
+}
+
+function Font({
+  title,
+  name,
+  settings,
+  setSettings,
+  fonts,
+}: {
+  title: string;
+  name: string;
+  settings: any;
+  setSettings: any;
+  fonts: { title: string; className: string }[];
+}) {
+  const [selectedFont, setSelectedFont] = useState(
+    settings?.[name] || fonts[0]?.title || "Lato"
+  );
+
+  useEffect(() => {
+    setSelectedFont(settings?.[name] || fonts[0]?.title || "Lato");
+  }, [settings, fonts]);
+
+  function handleFontChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const newFont = e.target.value;
+    setSelectedFont(newFont);
+    setSettings((prev: any) => ({ ...prev, [name]: newFont }));
+  }
+
+  return (
+    <div className="flex grow flex-col items-center">
+      <label className={`font-bold w-full`} htmlFor={name}>
+        {title}:
+      </label>
+      <select
+        className={`rounded m-1 p-1 text-center w-full h-8 ${getFontClass(
+          selectedFont
+        )}`}
+        name={name}
+        id={name}
+        value={selectedFont}
+        onChange={handleFontChange}
+      >
+        {fonts.map((font) => (
+          <option
+            key={font.title}
+            className={font.className}
+            value={font.title}
+          >
+            {font.title}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function Color({
+  name,
+  type,
+  settings,
+  setSettings,
+}: {
+  name: string;
+  type: "background" | "content" | "text";
+  settings: any;
+  setSettings: any;
+}) {
+  const [color, setColor] = useState(settings?.color?.[type] || "#000000");
+
+  useEffect(() => {
+    setColor(settings?.color?.[type] || "#000000");
+  }, [settings, type]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = e.target.value;
+    setColor(newColor);
+    setSettings((prev: any) => ({
+      ...prev,
+      color: { ...prev.color, [type]: newColor },
+    }));
+  };
+
+  return (
+    <div className="w-full flex flex-col items-center mt-4">
+      <label className="font-bold w-full" htmlFor={`color-${type}`}>
+        {name}:
+      </label>
+      <input
+        className="rounded m-1 w-4/5 text-center custom-color"
+        type="color"
+        id={`color-${type}`}
+        name={`color-${type}`}
+        value={color}
+        onChange={handleChange}
+      />
     </div>
   );
 }
