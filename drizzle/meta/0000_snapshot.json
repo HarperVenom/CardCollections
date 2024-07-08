@@ -1,11 +1,11 @@
 {
-  "id": "db3d0bb6-03fc-4a13-a731-fc3b626726dd",
+  "id": "571faa2a-fce3-4b71-a0ba-473ea655e75e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.characters": {
-      "name": "characters",
+    "public.cards": {
+      "name": "cards",
       "schema": "",
       "columns": {
         "id": {
@@ -15,14 +15,68 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "name": {
-          "name": "name",
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "nickname": {
-          "name": "nickname",
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "attributes": {
+          "name": "attributes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "font1": {
+          "name": "font1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "font2": {
+          "name": "font2",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color-background": {
+          "name": "color-background",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color-content": {
+          "name": "color-content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color-text": {
+          "name": "color-text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rarity": {
+          "name": "rarity",
           "type": "text",
           "primaryKey": false,
           "notNull": true

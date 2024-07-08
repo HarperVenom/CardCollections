@@ -1,9 +1,14 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import { CardFields, CardSettings, ConvertedCardType } from "../../types/types";
-import TemplateWindow from "../app/create-card/templates-window";
-import { CardContext } from "@/app/create-card/context";
+import {
+  Attributes,
+  CardSettings,
+  ConvertedCardType,
+  FormEntry,
+} from "../../types/types";
+import TemplateWindow from "../app/edit-card/templates-window";
+import { CardContext } from "@/app/edit-card/context";
 import { useEdgeStore } from "@/lib/edgestore";
 import {
   bebasNeue,
@@ -14,9 +19,13 @@ import {
   roboto,
   robotoSlab,
 } from "@/app/ui/fonts";
-import "@/app/create-card/form.css";
+import "@/app/edit-card/form.css";
 import Cross from "@/assets/cross";
-import { getFontClass, getRarityColor } from "@/utils/utils";
+import {
+  AttributesToFormEntries as attributesToFormEntries,
+  getFontClass,
+  getRarityColor,
+} from "@/utils/utils";
 
 interface FormErrors {
   name?: string[];
@@ -27,20 +36,11 @@ interface FormState {
   errors: FormErrors;
 }
 
-interface FormEntry {
-  id: number;
-  name: string;
-  value: string;
-}
-
 interface CardFormProps {
   formAction: any;
-  initialData: {
-    name: string;
-    nickname: string;
-  };
+  initialCard?: ConvertedCardType;
 }
-export default function CardForm({ formAction, initialData }: CardFormProps) {
+export default function CardForm({ formAction }: CardFormProps) {
   const { card, setCard } = useContext(CardContext);
 
   const [formState, action] = useFormState<FormState>(formAction, {
@@ -50,18 +50,27 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   const [templateWindowOpened, setTemplateWindowOpened] = useState(false);
   const [templateApplied, setTemplateApplied] = useState(false);
 
-  const [title, setTitle] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
-  const [description, setDescription] = useState<string>("");
-  const [attributes, setAttributes] = useState<FormEntry[]>([]);
-  const [category, setCategory] = useState<string>("");
-  const [settings, setSettings] = useState<CardSettings>({
-    font1: "Lato",
-    font2: "Lato",
-  });
-  const [rarity, setRarity] = useState<string>("common");
-
-  const { edgestore } = useEdgeStore();
+  const [title, setTitle] = useState<string>(card.title?.value || "");
+  const [image, setImage] = useState<string>(card.image?.url || "");
+  const [description, setDescription] = useState<string>(
+    card.description?.value || ""
+  );
+  const [attributes, setAttributes] = useState<FormEntry[]>(
+    (card.attributes && attributesToFormEntries(card.attributes)) || []
+  );
+  const [category, setCategory] = useState<string>(card.category?.value || "");
+  const [settings, setSettings] = useState<CardSettings>(
+    card.settings || {
+      font1: "Lato",
+      font2: "Lato",
+      color: {
+        background: "#FFFFFF",
+        content: "#E5E7EB",
+        text: "#000000",
+      },
+    }
+  );
+  const [rarity, setRarity] = useState<string>(card.rarity || "common");
 
   useEffect(() => {
     setCard((prev) => ({
@@ -71,17 +80,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   }, [title]);
 
   useEffect(() => {
-    if (!image) return;
-    let tmp = URL.createObjectURL(image);
-
-    const objectUrl = tmp;
-    setCard((prev) => ({ ...prev, image: { url: objectUrl } }));
-    // free memory
-    for (let i = 0; i < objectUrl.length; i++) {
-      return () => {
-        URL.revokeObjectURL(objectUrl[i]);
-      };
-    }
+    setCard((prev) => ({ ...prev, image: { url: image } }));
   }, [image]);
 
   useEffect(() => {
@@ -99,9 +98,9 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
       ...prev,
       attributes: {
         ...attributes.reduce((acc, field) => {
-          acc[field.name] = field.value;
+          acc[field.key] = field.value;
           return acc;
-        }, {} as CardFields),
+        }, {} as Attributes),
       },
     }));
   }, [attributes]);
@@ -130,29 +129,24 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
     }));
   }, [rarity]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (image) {
-  //       const res = await edgestore.publicFiles.upload({
-  //         file: image,
-  //         onProgressChange: (progress) => {
-  //           // you can use this to show a progress bar
-  //           console.log(progress);
-  //         },
-  //       });
-  //       // you can run some server action or api here
-  //       // to add the necessary data to your database
+  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] || null;
+    if (!file) return;
 
-  //       console.log(res);
-  //     }
-  //   })();
-  // }, [image]);
+    let tmp = URL.createObjectURL(file);
+
+    const objectUrl = tmp;
+    setImage(objectUrl);
+    // free memory
+    for (let i = 0; i < objectUrl.length; i++) {
+      return () => {
+        URL.revokeObjectURL(objectUrl[i]);
+      };
+    }
+  }
 
   function handleAddAttribute() {
-    setAttributes((prev) => [
-      ...prev,
-      { id: prev.length, name: "", value: "" },
-    ]);
+    setAttributes((prev) => [...prev, { id: prev.length, key: "", value: "" }]);
   }
 
   function handleRemoveAttribute(id: number) {
@@ -165,7 +159,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   ) {
     const updated = attributes.map((field) => {
       if (field.id === fieldId) {
-        field.name = e.target.value;
+        field.key = e.target.value;
       }
       return field;
     });
@@ -187,7 +181,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
 
   async function handleTemplateChoose(template: ConvertedCardType) {
     const formEntries: FormEntry[] = Object.entries(template.attributes!).map(
-      ([key, value], i) => ({ id: i, name: key, value: value })
+      ([key, value], i) => ({ id: i, key: key, value: value })
     );
 
     setAttributes(formEntries);
@@ -225,11 +219,18 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
             {card.image ? "Change Image" : "Upload Image"}
           </label>
           <input
+            readOnly
+            className="hidden"
+            type="text"
+            name="imageURL"
+            value={image}
+          />
+          <input
             className="rounded m-auto my-1 text-center hidden"
             type="file"
             id="image"
             name="image"
-            onChange={(e) => setImage(e.target.files?.[0] || null)}
+            onChange={handleImageUpload}
           />
         </FormSection>
 
@@ -266,13 +267,13 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
               <div className="flex w-full items-center" key={field.id}>
                 <div className="flex items-center w-1/2">
                   {templateApplied ? (
-                    <span className="text-lg">{field.name}</span>
+                    <span className="text-lg">{field.key}</span>
                   ) : (
                     <input
                       className="rounded my-1 h-7 p-1 w-full"
                       type="text"
-                      name="name"
-                      value={field.name}
+                      name="attribute-name"
+                      value={field.key}
                       onChange={(e) => handleAttributeKeyChange(e, field.id)}
                     />
                   )}
@@ -282,7 +283,7 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
                   <input
                     className="rounded my-1 h-7 p-1 w-full"
                     type="text"
-                    name="value"
+                    name="attribute-value"
                     id="value"
                     value={field.value}
                     onChange={(e) => handleAttributeValueChange(e, field.id)}
@@ -436,10 +437,12 @@ export default function CardForm({ formAction, initialData }: CardFormProps) {
   function RarityRadio({ rarity }: { rarity: string }) {
     return (
       <input
-        className={`appearance-none w-10 h-10 bg-${
-          rarity === "common" ? "white" : getRarityColor(rarity)
-        } rounded-full hover:outline
+        className={`appearance-none w-10 h-10 rounded-full hover:outline
                   outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2`}
+        style={{
+          backgroundColor:
+            rarity === "common" ? "white" : getRarityColor(rarity),
+        }}
         type="radio"
         name="rarity"
         value={rarity}
@@ -545,8 +548,9 @@ function Color({
   settings: any;
   setSettings: any;
 }) {
+  console.log(settings?.color?.[type]);
   const [color, setColor] = useState(settings?.color?.[type] || "#000000");
-
+  console.log(color);
   useEffect(() => {
     setColor(settings?.color?.[type] || "#000000");
   }, [settings, type]);

@@ -10,8 +10,8 @@ export default function Card({ data: card }: { data: ConvertedCardType }) {
     >
       <div
         className={`absolute w-full h-full 
-      scale-105 -z-10 blur-md opacity-50 brightness-150
-      bg-${getRarityColor(card.rarity)}`}
+      scale-105 -z-10 blur-md opacity-50 brightness-150`}
+        style={{ backgroundColor: getRarityColor(card.rarity) }}
       ></div>
       <div
         className={`w-full h-full bg-white rounded-xl 
@@ -52,7 +52,7 @@ export default function Card({ data: card }: { data: ConvertedCardType }) {
         {!card.image && card.title && card.title.value && (
           <div
             className={`text-center min-w-36 max-w-[200px] max-h-16 mx-auto text-lg
-          bg-gray-200 py-1 px-4 rounded-full -mt-10 shadow-md
+          bg-gray-200 py-1 px-4 rounded-full -mt-10
           overflow-hidden font-bold ${getFontClass(card.settings?.font1!)}`}
             style={{
               backgroundColor: card.settings?.color?.content,
@@ -118,15 +118,6 @@ export default function Card({ data: card }: { data: ConvertedCardType }) {
             {card.category.value}
           </h2>
         )}
-        {/* <div className="p-4">
-          {card.attributes &&
-            Object.entries(card.attributes!).map(([key, value], i) => (
-              <div key={i} className="flex">
-                <div className="font-bold mr-2">{`${key}: `}</div>
-                <div>{value}</div>
-              </div>
-            ))}
-        </div> */}
       </div>
     </div>
   );

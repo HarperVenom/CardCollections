@@ -1,1 +1,0 @@
-ALTER TABLE "characters" RENAME TO "cards";

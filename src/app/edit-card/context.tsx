@@ -15,17 +15,16 @@ export const CardContext = createContext<CardContext>({
   templates: [],
 });
 
-export default function FormFieldsProvider({
+export default function CardProvider({
   children,
+  initialCard,
   templates,
 }: {
   children: React.ReactNode;
+  initialCard: ConvertedCardType;
   templates: ConvertedCardType[];
 }) {
-  const [card, setCard] = useState<ConvertedCardType>({
-    id: "",
-    rarity: "common",
-  });
+  const [card, setCard] = useState<ConvertedCardType>(initialCard);
 
   return (
     <CardContext.Provider value={{ card, setCard, templates }}>

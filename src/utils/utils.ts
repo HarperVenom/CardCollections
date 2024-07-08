@@ -7,6 +7,7 @@ import {
   roboto,
   robotoSlab,
 } from "@/app/ui/fonts";
+import { Attributes, FormEntry } from "../../types/types";
 
 export function getFontClass(font: string): string {
   switch (font) {
@@ -32,12 +33,27 @@ export function getFontClass(font: string): string {
 export function getRarityColor(rarity: string): string {
   switch (rarity) {
     case "rare":
-      return "green-500";
+      return "rgb(34 197 94)";
     case "epic":
-      return "purple-500";
+      return "rgb(168 85 247)";
     case "legendary":
-      return "yellow-500";
+      return "rgb(234 179 8)";
     default:
       return "";
   }
+}
+
+export function AttributesToFormEntries(attributes: Attributes): FormEntry[] {
+  const entries = Object.entries(attributes);
+  const formFields: FormEntry[] = [];
+  for (let i = 0; i < entries.length; i++) {
+    const [key, value] = entries[i];
+    const formField: FormEntry = {
+      id: i,
+      key: key,
+      value: value,
+    };
+    formFields.push(formField);
+  }
+  return formFields;
 }

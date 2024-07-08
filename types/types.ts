@@ -1,7 +1,16 @@
 export type CardType = {
   id: string;
-  isTemplate: boolean;
-  fields: string;
+  title?: string;
+  image?: string;
+  description?: string;
+  attributes?: string;
+  category?: string;
+  font1?: string;
+  font2?: string;
+  colorBackground?: string;
+  colorContent?: string;
+  colorText?: string;
+  rarity: string;
 };
 
 export type ConvertedCardType = {
@@ -45,6 +54,12 @@ export type FieldsTemplate = {
   };
 };
 
-export type CardFields = {
+export type Attributes = {
   [key: string]: string;
 };
+
+export interface FormEntry {
+  id: number;
+  key: string;
+  value: string;
+}

@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main>
       <h1 className="font-bold text-lg">Welcome to story builder!</h1>
-      <Link href={"/create-card"}>Create Character</Link>
+      <Link href={"/edit-card"}>Create Character</Link>
       <CardsList />
     </main>
   );

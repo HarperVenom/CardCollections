@@ -7,69 +7,32 @@ import db from "../db/drizzle";
 import { cards as cardsTable } from "../db/schema";
 import { CardType, ConvertedCardType } from "../types/types";
 import { eq } from "drizzle-orm";
-
-// interface FormState {
-//   errors: {
-//     fields?: CardField[];
-//     _form?: string[];
-//   };
-// }
+import { backendClient } from "@/lib/edgestore-server";
 
 export async function getCards(): Promise<ConvertedCardType[]> {
-  const data = await db
-    .select()
-    .from(cardsTable)
-    .where(eq(cardsTable.isTemplate, false));
+  const data = await db.select().from(cardsTable);
 
   const cards = data.map((card) => convertCard(card));
-
   return cards;
 }
 
-export async function getTemplates(): Promise<ConvertedCardType[]> {
-  const data = await db
-    .select()
-    .from(cardsTable)
-    .where(eq(cardsTable.isTemplate, true));
-
-  const templates = data.map((card) => convertCard(card));
-
-  return templates;
-}
-
 export async function createCard(formState: any, formData: FormData) {
-  const keys = formData.getAll("name") as string[];
-  const values = formData.getAll("value") as string[];
-
-  const template = keys.reduce((acc, key) => {
-    acc[key] = "";
-    return acc;
-  }, {} as Record<string, any>);
-  const templateString = JSON.stringify(template);
-
-  const newFormData = keys.reduce((acc, key, index) => {
-    acc[key] = values[index];
-    return acc;
-  }, {} as Record<string, any>);
-  const dataString = JSON.stringify(newFormData);
+  const card = await getCardFromForm(formData);
 
   try {
     await db.insert(cardsTable).values({
-      fields: dataString,
-      isTemplate: false,
+      title: card.title,
+      image: card.image,
+      description: card.description,
+      attributes: card.attributes,
+      category: card.category,
+      font1: card.font1,
+      font2: card.font2,
+      colorBackground: card.colorBackground,
+      colorContent: card.colorContent,
+      colorText: card.colorText,
+      rarity: card.rarity,
     });
-
-    const existingTemplate = await db
-      .select()
-      .from(cardsTable)
-      .where(eq(cardsTable.fields, templateString));
-
-    if (existingTemplate.length === 0) {
-      await db.insert(cardsTable).values({
-        fields: templateString,
-        isTemplate: true,
-      });
-    }
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
@@ -96,56 +59,128 @@ export async function getCard(id: string): Promise<ConvertedCardType> {
     .from(cardsTable)
     .where(eq(cardsTable.id, id))
     .limit(1);
-
   return convertCard(data);
 }
 
-// export async function updateCard(
-//   id: string,
-//   formData: FormData
-// ): Promise<FormState> {
-//   const result = cardSchema.safeParse({
-//     name: formData.get("name"),
-//     nickname: formData.get("nickname"),
-//   });
+export async function updateCard(
+  id: string,
+  formState: any,
+  formData: FormData
+) {
+  const card = await getCardFromForm(formData);
+  try {
+    await db
+      .update(cardsTable)
+      .set({
+        title: card.title,
+        image: card.image,
+        description: card.description,
+        attributes: card.attributes,
+        category: card.category,
+        font1: card.font1,
+        font2: card.font2,
+        colorBackground: card.colorBackground,
+        colorContent: card.colorContent,
+        colorText: card.colorText,
+        rarity: card.rarity,
+      })
+      .where(eq(cardsTable.id, id));
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return {
+        errors: {
+          _form: [error.message],
+        },
+      };
+    } else {
+      return {
+        errors: {
+          _form: ["Something went wrong"],
+        },
+      };
+    }
+  }
 
-//   if (!result.success) {
-//     return { errors: result.error.flatten().fieldErrors };
-//   }
-
-//   try {
-//     await db.update(cards).set({
-//       name: result.data.name,
-//       nickname: result.data.nickname,
-//     });
-//   } catch (error: unknown) {
-//     if (error instanceof Error) {
-//       return {
-//         errors: {
-//           _form: [error.message],
-//         },
-//       };
-//     } else {
-//       return {
-//         errors: {
-//           _form: ["Something went wrong"],
-//         },
-//       };
-//     }
-//   }
-
-//   revalidatePath("/");
-//   redirect("/");
-// }
+  revalidatePath("/");
+  revalidatePath(`/cards/${id}`);
+  redirect("/");
+}
 
 export async function deleteCard(id: string) {
   const data = await db.delete(cardsTable).where(eq(cardsTable.id, id));
-  return data;
+  revalidatePath("/");
+  revalidatePath(`/cards/${id}`);
+  redirect("/");
 }
 
 function convertCard(card: CardType): ConvertedCardType {
   return {
-    ...card,
-    fields: JSON.parse(card.fields),
+    id: card.id,
+    title: {
+      value: card.title!,
+    },
+    image: {
+      url: card.image!,
+    },
+    description: {
+      value: card.description!,
+    },
+    attributes: card.attributes && JSON.parse(card.attributes),
+    category: {
+      value: card.category!,
+    },
+    settings: {
+      font1: card.font1,
+      font2: card.font2,
+      color: {
+        background: card.colorBackground,
+        content: card.colorContent,
+        text: card.colorText,
+      },
+    },
+    rarity: card.rarity,
   };
+}
+
+async function getCardFromForm(formData: FormData) {
+  const keys = formData.getAll("attribute-name") as string[];
+  const values = formData.getAll("attribute-value") as string[];
+
+  const image = formData.get("image") as File;
+
+  let imgUrl: string;
+
+  if (image.size !== 0) {
+    const res = await backendClient.publicFiles.upload({
+      content: {
+        blob: new Blob([image], { type: image.type }),
+        extension: "png",
+      },
+    });
+    imgUrl = res.url;
+  } else {
+    imgUrl = formData.get("imageURL")?.toString() as string;
+  }
+
+  const attributes = keys.reduce((acc, key, index) => {
+    acc[key] = values[index];
+    return acc;
+  }, {} as Record<string, any>);
+  const attributesString = JSON.stringify(attributes);
+
+  const card = {
+    title: formData.get("title")?.toString() || "",
+    image: imgUrl,
+    description: formData.get("description")?.toString() || "",
+    attributes: attributesString,
+    category: formData.get("category")?.toString() || "",
+    font1: formData.get("font1")?.toString() || "",
+    font2: formData.get("font2")?.toString() || "",
+    colorBackground: formData.get("color-background")?.toString() || "",
+    colorContent: formData.get("color-content")?.toString() || "",
+    colorText: formData.get("color-text")?.toString() || "",
+    rarity: formData.get("rarity")?.toString() || "",
+  };
+
+  return card;
 }
