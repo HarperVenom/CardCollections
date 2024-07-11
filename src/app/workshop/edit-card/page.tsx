@@ -1,4 +1,4 @@
-import { ConvertedCardType } from "../../../types/types";
+import { ConvertedCardType } from "../../../../types/cardTypes";
 import CardEditor from "./card-editor";
 import CardProvider from "./context";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState } from "react";
-import { ConvertedCardType } from "../../../types/types";
+import { ConvertedCardType } from "../../../../types/cardTypes";
 
 interface CardContext {
   card: ConvertedCardType;

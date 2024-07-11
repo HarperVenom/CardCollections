@@ -1,11 +1,12 @@
 "use client";
 import { useContext } from "react";
-import { ConvertedCardType } from "../../../types/types";
+import { ConvertedCardType } from "../../../../types/cardTypes";
 import CardProvider, { CardContext } from "./context";
-import { rubik } from "../ui/fonts";
-import CardForm from "@/components/card-form";
+import { rubik } from "../../ui/fonts";
+
 import Card from "@/components/card";
-import { createCard, updateCard } from "../../../actions/cardActions";
+import { createCard, updateCard } from "../../../../actions/cardActions";
+import CardForm from "./card-form";
 
 export default function CardEditor({
   action,
@@ -17,7 +18,7 @@ export default function CardEditor({
   const updateAction = updateCard.bind(null, card.id);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex flex-grow overflow-hidden">
       <div className="w-1/3 min-w-[400px] py-6 bg-gray-300 rounded shadow-xl overflow-x-hidden overflow-y-auto">
         <h2
           className={`font-bold text-3xl text-center text-gray-500

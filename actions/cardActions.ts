@@ -5,9 +5,10 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import db from "../db/drizzle";
 import { cards as cardsTable } from "../db/schema";
-import { CardType, ConvertedCardType } from "../types/types";
+import { CardType, ConvertedCardType } from "../types/cardTypes";
 import { eq } from "drizzle-orm";
 import { backendClient } from "@/lib/edgestore-server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function getCards(): Promise<ConvertedCardType[]> {
   const data = await db.select().from(cardsTable);
@@ -19,8 +20,11 @@ export async function getCards(): Promise<ConvertedCardType[]> {
 export async function createCard(formState: any, formData: FormData) {
   const card = await getCardFromForm(formData);
 
+  const user = await currentUser();
+
   try {
     await db.insert(cardsTable).values({
+      authorId: user?.id || "",
       title: card.title,
       image: card.image,
       description: card.description,
@@ -49,8 +53,8 @@ export async function createCard(formState: any, formData: FormData) {
     }
   }
 
-  revalidatePath("/");
-  redirect("/");
+  revalidatePath("/workshop");
+  redirect("/workshop");
 }
 
 export async function getCard(id: string): Promise<ConvertedCardType> {
@@ -101,16 +105,16 @@ export async function updateCard(
     }
   }
 
-  revalidatePath("/");
+  revalidatePath("/workshop");
   revalidatePath(`/cards/${id}`);
-  redirect("/");
+  redirect("/workshop");
 }
 
 export async function deleteCard(id: string) {
   const data = await db.delete(cardsTable).where(eq(cardsTable.id, id));
-  revalidatePath("/");
+  revalidatePath("/workshop");
   revalidatePath(`/cards/${id}`);
-  redirect("/");
+  redirect("/workshop");
 }
 
 function convertCard(card: CardType): ConvertedCardType {

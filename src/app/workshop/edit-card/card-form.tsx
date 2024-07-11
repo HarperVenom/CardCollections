@@ -1,15 +1,7 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import {
-  Attributes,
-  CardSettings,
-  ConvertedCardType,
-  FormEntry,
-} from "../../types/types";
-import TemplateWindow from "../app/edit-card/templates-window";
-import { CardContext } from "@/app/edit-card/context";
-import { useEdgeStore } from "@/lib/edgestore";
+import { CardContext } from "@/app/workshop/edit-card/context";
 import {
   bebasNeue,
   comicNeue,
@@ -19,13 +11,21 @@ import {
   roboto,
   robotoSlab,
 } from "@/app/ui/fonts";
-import "@/app/edit-card/form.css";
+import "@/app/workshop/edit-card/form.css";
 import Cross from "@/assets/cross";
 import {
   AttributesToFormEntries as attributesToFormEntries,
   getFontClass,
   getRarityColor,
 } from "@/utils/utils";
+import {
+  Attributes,
+  CardSettings,
+  ConvertedCardType,
+  FormEntry,
+} from "../../../../types/cardTypes";
+import TemplateWindow from "./templates-window";
+import { useAuth } from "@clerk/nextjs";
 
 interface FormErrors {
   name?: string[];
@@ -41,6 +41,8 @@ interface CardFormProps {
   initialCard?: ConvertedCardType;
 }
 export default function CardForm({ formAction }: CardFormProps) {
+  const { userId } = useAuth();
+
   const { card, setCard } = useContext(CardContext);
 
   const [formState, action] = useFormState<FormState>(formAction, {
@@ -425,8 +427,9 @@ export default function CardForm({ formAction }: CardFormProps) {
           <p>{formState.errors.nickname.join(", ")}</p>
         )} */}
         <button
-          className="bg-blue-500 text-white p-1 px-8 rounded shadow-md mt-4"
+          className="bg-blue-500 text-white p-1 px-8 rounded shadow-md mt-4 disabled:opacity-50"
           type="submit"
+          disabled={userId === null}
         >
           Save
         </button>

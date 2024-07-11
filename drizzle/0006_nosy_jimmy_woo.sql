@@ -1,0 +1,1 @@
+ALTER TABLE "publicCards" ALTER COLUMN "authorId" SET DATA TYPE text;

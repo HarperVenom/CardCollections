@@ -1,7 +1,7 @@
 "use client";
 import { useContext } from "react";
-import { ConvertedCardType } from "../../../types/types";
-import Card from "../../components/card";
+import { ConvertedCardType } from "../../../../types/cardTypes";
+import Card from "../../../components/card";
 import { CardContext } from "./context";
 
 export default function TemplateWindow({

@@ -8,6 +8,48 @@
       "when": 1720430731836,
       "tag": "0000_lumpy_beast",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1720530697564,
+      "tag": "0001_bitter_loners",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1720530969778,
+      "tag": "0002_blue_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1720695257836,
+      "tag": "0003_demonic_blink",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1720695356553,
+      "tag": "0004_known_roland_deschain",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1720698381305,
+      "tag": "0005_loving_carlie_cooper",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1720698459410,
+      "tag": "0006_nosy_jimmy_woo",
+      "breakpoints": true
     }
   ]
 }

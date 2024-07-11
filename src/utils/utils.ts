@@ -7,7 +7,7 @@ import {
   roboto,
   robotoSlab,
 } from "@/app/ui/fonts";
-import { Attributes, FormEntry } from "../../types/types";
+import { Attributes, FormEntry } from "../../types/cardTypes";
 
 export function getFontClass(font: string): string {
   switch (font) {

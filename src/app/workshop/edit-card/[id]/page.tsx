@@ -1,5 +1,5 @@
-import { getCard } from "../../../../actions/cardActions";
-import { ConvertedCardType } from "../../../../types/types";
+import { getCard } from "../../../../../actions/cardActions";
+import { ConvertedCardType } from "../../../../../types/cardTypes";
 import CardEditor from "../card-editor";
 import CardProvider from "../context";
 
