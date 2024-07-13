@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCard } from "../../actions/cardActions";
+import { deleteCard } from "../../../../actions/cardActions";
 
 export default function CardDeleteButton({ id }: { id: string }) {
   return (

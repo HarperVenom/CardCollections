@@ -1,7 +1,7 @@
 import Card from "@/components/card";
-import { deleteCard, getCard } from "../../../../actions/cardActions";
 import Link from "next/link";
-import CardDeleteButton from "@/components/card-delete";
+import { getCard } from "../../../../actions/cardActions";
+import CardDeleteButton from "./card-delete";
 
 export default async function CardPage({ params }: { params: { id: string } }) {
   const card = await getCard(params.id);

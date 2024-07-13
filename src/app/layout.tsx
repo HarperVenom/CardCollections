@@ -2,15 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { lato } from "./ui/fonts";
 import { EdgeStoreProvider } from "@/lib/edgestore";
-import Link from "next/link";
-import {
-  ClerkProvider,
-  SignIn,
-  SignInButton,
-  SignOutButton,
-} from "@clerk/nextjs";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
+import { ClerkProvider } from "@clerk/nextjs";
+import NavBar from "./nav-bar/nav-bar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,61 +15,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await currentUser();
-
   return (
     <ClerkProvider>
       <html lang="en">
         <body
           className={`${lato.className} bg-gray-200 h-screen flex flex-col overflow-x-hidden`}
         >
-          <nav className="bg-gray-300 shadow-lg z-10">
-            <ul className="flex max-w-[1400px] m-auto items-center">
-              <li className="flex">
-                <Link
-                  className="py-4 px-6 text-xl  text-gray-500 hover:bg-gray-200 active:bg-gray-100"
-                  href="/"
-                >
-                  Home
-                </Link>
-              </li>
-              <li className="flex">
-                <Link
-                  className="py-4 px-6 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
-                  href="/workshop"
-                >
-                  Workshop
-                </Link>
-              </li>
-              <li className="flex">
-                <Link
-                  className="py-4 px-6 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
-                  href="/collections"
-                >
-                  Collections
-                </Link>
-              </li>
-              {user ? (
-                <div className="ml-auto flex items-center gap-2 p-2 m-2 rounded cursor-pointer hover:bg-gray-200">
-                  <img
-                    className="rounded-full"
-                    src={user.imageUrl}
-                    width="40"
-                    height="40"
-                    alt=""
-                  ></img>
-                  <div>{user?.firstName}</div>
-                  <SignOutButton></SignOutButton>
-                </div>
-              ) : (
-                <SignInButton>
-                  <div className="ml-auto bg-blue-500 text-lg text-white py-2 px-4 rounded mx-4 cursor-pointer">
-                    Sign In
-                  </div>
-                </SignInButton>
-              )}
-            </ul>
-          </nav>
+          <NavBar></NavBar>
           <EdgeStoreProvider>{children}</EdgeStoreProvider>
         </body>
       </html>

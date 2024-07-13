@@ -11,7 +11,12 @@ import { backendClient } from "@/lib/edgestore-server";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function getCards(): Promise<ConvertedCardType[]> {
-  const data = await db.select().from(cardsTable);
+  const user = await currentUser();
+
+  const data = await db
+    .select()
+    .from(cardsTable)
+    .where(eq(cardsTable.authorId, user?.id || ""));
 
   const cards = data.map((card) => convertCard(card));
   return cards;
