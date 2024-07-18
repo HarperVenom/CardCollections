@@ -25,7 +25,7 @@ export default function NavLinks() {
 
   return (
     <>
-      {windowWidth < 750 ? (
+      {windowWidth < 768 ? (
         <div>
           <button
             className="p-2 mx-2 hover:bg-gray-200 rounded z-10"
