@@ -1,7 +1,14 @@
 import { Button } from "@/components/button";
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  SignInButton,
+  SignOutButton,
+} from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import NavLinks from "./nav-links";
+import Link from "next/link";
+import { Spinner } from "@nextui-org/spinner";
 
 export default async function NavBar() {
   const user = await currentUser();
@@ -23,14 +30,26 @@ export default async function NavBar() {
                 ></img>
                 <div>{user?.firstName}</div>
               </div>
-              <SignOutButton>
-                <Button>Sign Out</Button>
-              </SignOutButton>
+              <ClerkLoading>
+                <Spinner></Spinner>
+              </ClerkLoading>
+              <ClerkLoaded>
+                <SignOutButton>
+                  <Button>Sign Out</Button>
+                </SignOutButton>
+              </ClerkLoaded>
             </>
           ) : (
-            <SignInButton>
-              <Button>Sign In</Button>
-            </SignInButton>
+            <>
+              <ClerkLoading>
+                <Spinner></Spinner>
+              </ClerkLoading>
+              <ClerkLoaded>
+                <Link href={"/sign-in"}>
+                  <Button>Sign In</Button>
+                </Link>
+              </ClerkLoaded>
+            </>
           )}
         </div>
       </ul>

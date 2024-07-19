@@ -34,7 +34,7 @@ export default function NavLinks() {
             <MenuIcon stroke="rgb(107 114 128)"></MenuIcon>
           </button>
           <div
-            className="absolute w-screen h-screen top-0 bg-black opacity-30 transition-all cursor-pointer z-[-2]"
+            className="fixed w-screen h-screen top-0 bg-black opacity-30 transition-all cursor-pointer z-[-2]"
             style={{
               opacity: menuOpened ? "0.3" : "0",
               pointerEvents: menuOpened ? "all" : "none",
@@ -42,7 +42,7 @@ export default function NavLinks() {
             onClick={() => setMenuOpened(false)}
           ></div>
           <ul
-            className="pt-16 absolute min-w-64 h-screen flex flex-col bg-gray-300 transition-all top-0 z-[-1]"
+            className="pt-16 fixed min-w-64 h-screen flex flex-col bg-gray-300 transition-all top-0 z-[-1]"
             style={{
               transform: menuOpened ? "translate(0, 0)" : "translate(-100%, 0)",
             }}

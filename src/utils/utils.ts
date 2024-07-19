@@ -1,11 +1,11 @@
 import {
-  bebasNeue,
+  baskervville,
   comicNeue,
   lato,
-  oswald,
+  lobster,
+  pacifico,
   permanentMarker,
-  roboto,
-  robotoSlab,
+  rowdies,
 } from "@/app/ui/fonts";
 import { Attributes, FormEntry } from "../../types/cardTypes";
 
@@ -13,16 +13,16 @@ export function getFontClass(font: string): string {
   switch (font) {
     case "Lato":
       return lato.className;
-    case "Roboto":
-      return roboto.className;
     case "Comic Neue":
       return comicNeue.className;
-    case "Roboto Slab":
-      return robotoSlab.className;
-    case "Bebas Neue":
-      return bebasNeue.className;
-    case "Oswald":
-      return oswald.className;
+    case "Baskervville":
+      return baskervville.className;
+    case "Pacifico":
+      return pacifico.className;
+    case "Lobster":
+      return lobster.className;
+    case "Rowdies":
+      return rowdies.className;
     case "Permanent Marker":
       return permanentMarker.className;
     default:

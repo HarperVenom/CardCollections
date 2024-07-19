@@ -1,15 +1,15 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { CardContext } from "@/app/workshop/edit-card/context";
 import {
-  bebasNeue,
+  baskervville,
   comicNeue,
   lato,
-  oswald,
+  lobster,
+  pacifico,
   permanentMarker,
-  roboto,
-  robotoSlab,
+  rowdies,
 } from "@/app/ui/fonts";
 import "@/app/workshop/edit-card/form.css";
 import Cross from "@/assets/cross";
@@ -26,6 +26,7 @@ import {
 } from "../../../../types/cardTypes";
 import TemplateWindow from "./templates-window";
 import { useAuth } from "@clerk/nextjs";
+import { Spinner } from "@nextui-org/spinner";
 
 interface FormErrors {
   name?: string[];
@@ -247,7 +248,7 @@ export default function CardForm({ formAction }: CardFormProps) {
         </FormSection>
 
         <FormSection name="Attributes" inputId="value">
-          {/* Templates */}
+          {/* Templates
           <div className="flex justify-center">
             <button
               className="bg-blue-500 text-white p-1 px-4 rounded shadow-md"
@@ -261,46 +262,48 @@ export default function CardForm({ formAction }: CardFormProps) {
                 onTemplateChoose={handleTemplateChoose}
               ></TemplateWindow>
             )}
-          </div>
+          </div> */}
 
           {/* Fields */}
-          <div className="my-4 w-full">
-            {attributes.map((field) => (
-              <div className="flex w-full items-center" key={field.id}>
-                <div className="flex items-center w-1/2">
-                  {templateApplied ? (
-                    <span className="text-lg">{field.key}</span>
-                  ) : (
+          {attributes.length > 0 && (
+            <div className="my-4 w-full">
+              {attributes.map((field) => (
+                <div className="flex w-full items-center" key={field.id}>
+                  <div className="flex items-center w-1/2">
+                    {templateApplied ? (
+                      <span className="text-lg">{field.key}</span>
+                    ) : (
+                      <input
+                        className="rounded my-1 h-7 p-1 w-full"
+                        type="text"
+                        name="attribute-name"
+                        value={field.key}
+                        onChange={(e) => handleAttributeKeyChange(e, field.id)}
+                      />
+                    )}
+                  </div>
+                  <div className="mr-2 text-2xl mb-1">: </div>
+                  <div className="w-1/2">
                     <input
                       className="rounded my-1 h-7 p-1 w-full"
                       type="text"
-                      name="attribute-name"
-                      value={field.key}
-                      onChange={(e) => handleAttributeKeyChange(e, field.id)}
+                      name="attribute-value"
+                      id="value"
+                      value={field.value}
+                      onChange={(e) => handleAttributeValueChange(e, field.id)}
                     />
-                  )}
+                  </div>
+                  <button
+                    type="button"
+                    className="w-7 h-full bg-gray-400 p-1 mx-1 rounded"
+                    onClick={() => handleRemoveAttribute(field.id)}
+                  >
+                    <Cross stroke="white" width={3}></Cross>
+                  </button>
                 </div>
-                <div className="mr-2 text-2xl mb-1">: </div>
-                <div className="w-1/2">
-                  <input
-                    className="rounded my-1 h-7 p-1 w-full"
-                    type="text"
-                    name="attribute-value"
-                    id="value"
-                    value={field.value}
-                    onChange={(e) => handleAttributeValueChange(e, field.id)}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="w-7 h-full bg-gray-400 p-1 mx-1 rounded"
-                  onClick={() => handleRemoveAttribute(field.id)}
-                >
-                  <Cross stroke="white" width={3}></Cross>
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Add/Edit Button */}
           <div className="flex justify-center">
@@ -347,16 +350,6 @@ export default function CardForm({ formAction }: CardFormProps) {
               name="font1"
               settings={settings}
               setSettings={setSettings}
-              fonts={[
-                { title: "Lato", className: lato.className },
-                { title: "Roboto", className: roboto.className },
-                { title: "Bebas Neue", className: bebasNeue.className },
-                { title: "Oswald", className: oswald.className },
-                {
-                  title: "Permanent Marker",
-                  className: permanentMarker.className,
-                },
-              ]}
             ></Font>
 
             <Font
@@ -364,11 +357,6 @@ export default function CardForm({ formAction }: CardFormProps) {
               name="font2"
               settings={settings}
               setSettings={setSettings}
-              fonts={[
-                { title: "Lato", className: lato.className },
-                { title: "Roboto", className: roboto.className },
-                { title: "Comic Neue", className: comicNeue.className },
-              ]}
             ></Font>
           </div>
           <div className="text-gray-500 w-full">
@@ -412,30 +400,33 @@ export default function CardForm({ formAction }: CardFormProps) {
           </div>
         </FormSection>
 
-        {/* <label htmlFor="name">Real Name:</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          onChange={() => updateData((prev: any) => ({ ...prev }))}
-        />
-        {formState.errors.name && <p>{formState.errors.name.join(", ")}</p>}
-
-        <label htmlFor="nickname">Nickname:</label>
-        <input type="text" name="nickname" id="nickname" />
-        {formState.errors.nickname && (
-          <p>{formState.errors.nickname.join(", ")}</p>
-        )} */}
-        <button
-          className="bg-blue-500 text-white p-1 px-8 rounded shadow-md mt-4 disabled:opacity-50"
-          type="submit"
-          disabled={userId === null}
-        >
-          Save
-        </button>
+        <SubmitButton></SubmitButton>
       </form>
     </>
   );
+
+  function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+      <>
+        <div className="w-24 h-12 flex justify-center items-center">
+          {pending ? (
+            <div className="mt-4">
+              <Spinner></Spinner>
+            </div>
+          ) : (
+            <button
+              className="bg-blue-500 text-white p-1 px-8 rounded shadow-md mt-4 disabled:opacity-50"
+              type="submit"
+              disabled={userId === null}
+            >
+              Save
+            </button>
+          )}
+        </div>
+      </>
+    );
+  }
 
   function RarityRadio({ rarity }: { rarity: string }) {
     return (
@@ -490,14 +481,25 @@ function Font({
   name,
   settings,
   setSettings,
-  fonts,
 }: {
   title: string;
   name: string;
   settings: any;
   setSettings: any;
-  fonts: { title: string; className: string }[];
 }) {
+  const fonts: { title: string; className: string }[] = [
+    { title: "Lato", className: lato.className },
+    { title: "Comic Neue", className: comicNeue.className },
+    { title: "Baskervville", className: baskervville.className },
+    { title: "Pacifico", className: pacifico.className },
+    { title: "Lobster", className: lobster.className },
+    { title: "Rowdies", className: rowdies.className },
+    {
+      title: "Permanent Marker",
+      className: permanentMarker.className,
+    },
+  ];
+
   const [selectedFont, setSelectedFont] = useState(
     settings?.[name] || fonts[0]?.title || "Lato"
   );
@@ -551,9 +553,8 @@ function Color({
   settings: any;
   setSettings: any;
 }) {
-  console.log(settings?.color?.[type]);
   const [color, setColor] = useState(settings?.color?.[type] || "#000000");
-  console.log(color);
+
   useEffect(() => {
     setColor(settings?.color?.[type] || "#000000");
   }, [settings, type]);

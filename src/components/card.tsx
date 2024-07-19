@@ -48,7 +48,7 @@ export default function Card({
             color: card.settings?.color?.text || "black",
           }}
         >
-          {card.image && (
+          {card.image && card.image.url && (
             <div
               className={`p-4 box-border min-w-[300px] max-w-[300px] 
           min-h-[250px] max-h-[250px] flex relative`}
@@ -76,10 +76,10 @@ export default function Card({
               )}
             </div>
           )}
-          {!card.image && card.title && card.title.value && (
+          {!card.image?.url && card.title && card.title.value && (
             <div
               className={`text-center min-w-36 max-w-[200px] max-h-16 mx-auto text-lg
-          bg-gray-200 py-1 px-4 rounded-full -mt-10
+          bg-gray-200 py-1 px-4 rounded-full
           overflow-hidden font-bold ${getFontClass(card.settings?.font1!)}`}
               style={{
                 backgroundColor: card.settings?.color?.content,

@@ -3,6 +3,7 @@ import "./globals.css";
 import { lato } from "./ui/fonts";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import { ClerkProvider } from "@clerk/nextjs";
+import { NextUIProvider } from "@nextui-org/system";
 import NavBar from "./nav-bar/nav-bar";
 
 export const metadata: Metadata = {
@@ -18,11 +19,15 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body
-          className={`${lato.className} bg-gray-200 h-screen flex flex-col overflow-x-hidden`}
-        >
-          <NavBar></NavBar>
-          <EdgeStoreProvider>{children}</EdgeStoreProvider>
+        <body>
+          <NextUIProvider>
+            <div
+              className={`${lato.className} bg-gray-200 h-screen flex flex-col overflow-x-hidden`}
+            >
+              <NavBar></NavBar>
+              <EdgeStoreProvider>{children}</EdgeStoreProvider>
+            </div>
+          </NextUIProvider>
         </body>
       </html>
     </ClerkProvider>

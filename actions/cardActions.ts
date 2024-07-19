@@ -111,7 +111,7 @@ export async function updateCard(
   }
 
   revalidatePath("/workshop");
-  revalidatePath(`/cards/${id}`);
+  revalidatePath(`/workshop/${id}`);
   redirect("/workshop");
 }
 

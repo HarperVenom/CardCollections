@@ -43,7 +43,7 @@ export default function CardEditor({
         ></CardForm>
       </div>
 
-      <div className="grow p-4 flex min-h-[500px] justify-center items-center bg-gray-400 -z-20">
+      <div className="grow p-4 flex min-h-[500px] justify-center items-center bg-gray-400">
         <Card data={card}></Card>
       </div>
     </div>
