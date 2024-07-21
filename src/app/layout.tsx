@@ -19,14 +19,10 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
-          <NextUIProvider>
-            <div
-              className={`${lato.className} bg-gray-200 h-screen flex flex-col overflow-x-hidden`}
-            >
-              <NavBar></NavBar>
-              <EdgeStoreProvider>{children}</EdgeStoreProvider>
-            </div>
+        <body className={`${lato.className}`}>
+          <NextUIProvider className="bg-gray-200 min-h-screen flex flex-col overflow-x-hidden`">
+            <NavBar></NavBar>
+            <EdgeStoreProvider>{children}</EdgeStoreProvider>
           </NextUIProvider>
         </body>
       </html>
