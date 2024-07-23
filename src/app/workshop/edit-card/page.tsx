@@ -6,11 +6,13 @@ export default function CreateCard() {
   const templates = [] as ConvertedCardType[];
 
   return (
-    <CardProvider
-      initialCard={{ id: "", rarity: "common" }}
-      templates={templates}
-    >
-      <CardEditor action="create"></CardEditor>
-    </CardProvider>
+    <div className="bg-gray-300">
+      <CardProvider
+        initialCard={{ id: "", rarity: "common" }}
+        templates={templates}
+      >
+        <CardEditor action="create"></CardEditor>
+      </CardProvider>
+    </div>
   );
 }

@@ -50,6 +50,20 @@
       "when": 1720698459410,
       "tag": "0006_nosy_jimmy_woo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1721553807230,
+      "tag": "0007_massive_victor_mancha",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1721732442937,
+      "tag": "0008_gifted_grandmaster",
+      "breakpoints": true
     }
   ]
 }

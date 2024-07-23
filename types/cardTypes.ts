@@ -4,15 +4,21 @@ export type CardType = {
   createdAt: Date;
   title?: string;
   image?: string;
+  imageLayout?: ImageLayout;
   description?: string;
   attributes?: string;
   category?: string;
   font1?: string;
   font2?: string;
+  borderColor?: string;
+  borderRadius?: BorderRadius;
+  textureBackground?: string;
+  textureContent?: string;
   colorBackground?: string;
   colorContent?: string;
   colorText?: string;
   rarity: string;
+  rarityColor: string;
 };
 
 export type ConvertedCardType = {
@@ -23,6 +29,7 @@ export type ConvertedCardType = {
   };
   image?: {
     url: string;
+    layout?: ImageLayout;
     style?: string[];
   };
   description?: {
@@ -43,6 +50,14 @@ export type ConvertedCardType = {
 export type CardSettings = {
   font1?: string;
   font2?: string;
+  border?: {
+    color?: string;
+    radius?: BorderRadius;
+  };
+  texture?: {
+    background?: string;
+    content?: string;
+  };
   color?: {
     background?: string;
     content?: string;
@@ -65,3 +80,6 @@ export interface FormEntry {
   key: string;
   value: string;
 }
+
+export type BorderRadius = "round" | "square";
+export type ImageLayout = "standart" | "wide" | "full";

@@ -4,6 +4,7 @@ import MenuIcon from "@/assets/menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import "./menu-button.css";
 
 export default function NavLinks() {
   const pathName = usePathname();
@@ -28,7 +29,7 @@ export default function NavLinks() {
       {windowWidth < 768 ? (
         <div>
           <button
-            className="p-2 mx-2 hover:bg-gray-200 rounded z-10"
+            className="menu-button transition-all p-2 mx-2 hover:bg-blue-300 hover:text-white active:bg-blue-400 rounded z-10"
             onClick={() => setMenuOpened((prev) => !prev)}
           >
             <MenuIcon stroke="rgb(107 114 128)"></MenuIcon>
@@ -42,16 +43,17 @@ export default function NavLinks() {
             onClick={() => setMenuOpened(false)}
           ></div>
           <ul
-            className="pt-16 fixed min-w-64 h-screen flex flex-col bg-gray-300 transition-all top-0 z-[-1]"
+            className=" pt-16 fixed min-w-64 h-screen flex flex-col bg-white transition-all top-0 z-[-1]"
             style={{
               transform: menuOpened ? "translate(0, 0)" : "translate(-100%, 0)",
             }}
           >
             <li className="flex">
               <Link
-                className="flex items-center w-full h-full py-4 px-8 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
+                className="transition-all flex items-center w-full h-full py-4 px-8 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
                 style={{
-                  backgroundColor: pathName === "/" ? "rgb(229 231 235)" : "",
+                  backgroundColor: pathName === "/" ? "rgb(96 165 250)" : "",
+                  color: pathName === "/" ? "white" : "",
                 }}
                 href="/"
               >
@@ -60,11 +62,12 @@ export default function NavLinks() {
             </li>
             <li className="flex">
               <Link
-                className="flex items-center w-full py-4 px-8 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
+                className="transition-all flex items-center w-full py-4 px-8 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
                 style={{
                   backgroundColor: pathName.includes("/workshop")
-                    ? "rgb(229 231 235)"
+                    ? "rgb(96 165 250)"
                     : "",
+                  color: pathName.includes("/workshop") ? "white" : "",
                 }}
                 href="/workshop"
               >
@@ -73,10 +76,11 @@ export default function NavLinks() {
             </li>
             <li className="flex">
               <Link
-                className="flex items-center w-full py-4 px-8 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
+                className="transition-all flex items-center w-full py-4 px-8 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
                 style={{
                   backgroundColor:
-                    pathName === "/collections" ? "rgb(229 231 235)" : "",
+                    pathName === "/collections" ? "rgb(96 165 250)" : "",
+                  color: pathName === "/collections" ? "white" : "",
                 }}
                 href="/collections"
               >
@@ -100,9 +104,10 @@ function Links() {
     <>
       <li className="flex">
         <Link
-          className="flex items-center h-full px-6 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
+          className="transition-all flex items-center h-full px-6 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
           style={{
-            backgroundColor: pathName === "/" ? "rgb(229 231 235)" : "",
+            backgroundColor: pathName === "/" ? "rgb(96 165 250)" : "",
+            color: pathName === "/" ? "white" : "",
           }}
           href="/"
         >
@@ -111,11 +116,12 @@ function Links() {
       </li>
       <li className="flex">
         <Link
-          className="flex items-center px-6 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
+          className="transition-all flex items-center px-6 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
           style={{
             backgroundColor: pathName.includes("/workshop")
-              ? "rgb(229 231 235)"
+              ? "rgb(96 165 250)"
               : "",
+            color: pathName.includes("/workshop") ? "white" : "",
           }}
           href="/workshop"
         >
@@ -124,10 +130,11 @@ function Links() {
       </li>
       <li className="flex">
         <Link
-          className="flex items-center px-6 text-xl text-gray-500 hover:bg-gray-200 active:bg-gray-100"
+          className="transition-all flex items-center px-6 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
           style={{
             backgroundColor:
-              pathName === "/collections" ? "rgb(229 231 235)" : "",
+              pathName === "/collections" ? "rgb(96 165 250)" : "",
+            color: pathName === "/collections" ? "white" : "",
           }}
           href="/collections"
         >

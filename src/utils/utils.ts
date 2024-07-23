@@ -30,14 +30,20 @@ export function getFontClass(font: string): string {
   }
 }
 
-export function getRarityColor(rarity: string): string {
+export function getRarityColors(rarity: string): string {
   switch (rarity) {
-    case "rare":
+    case "uncommon":
       return "rgb(34 197 94)";
+    case "rare":
+      return "rgb(59 130 246)";
     case "epic":
       return "rgb(168 85 247)";
     case "legendary":
       return "rgb(234 179 8)";
+    case "mythic":
+      return "rgb(220 38 38)";
+    case "shadowed":
+      return "black";
     default:
       return "";
   }

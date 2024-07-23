@@ -11,22 +11,22 @@ import {
   permanentMarker,
   rowdies,
 } from "@/app/ui/fonts";
-import "@/app/workshop/edit-card/form.css";
 import Cross from "@/assets/cross";
 import {
   AttributesToFormEntries as attributesToFormEntries,
   getFontClass,
-  getRarityColor,
+  getRarityColors,
 } from "@/utils/utils";
 import {
   Attributes,
   CardSettings,
   ConvertedCardType,
   FormEntry,
+  ImageLayout,
 } from "../../../../types/cardTypes";
-import TemplateWindow from "./templates-window";
 import { useAuth } from "@clerk/nextjs";
 import { Spinner } from "@nextui-org/spinner";
+import { Button } from "@/components/button";
 
 interface FormErrors {
   name?: string[];
@@ -41,6 +41,8 @@ interface CardFormProps {
   formAction: any;
   initialCard?: ConvertedCardType;
 }
+type ImageType = "main" | "background" | "content";
+
 export default function CardForm({ formAction }: CardFormProps) {
   const { userId } = useAuth();
 
@@ -54,7 +56,10 @@ export default function CardForm({ formAction }: CardFormProps) {
   const [templateApplied, setTemplateApplied] = useState(false);
 
   const [title, setTitle] = useState<string>(card.title?.value || "");
-  const [image, setImage] = useState<string>(card.image?.url || "");
+  const [image, setImage] = useState<{ url: string; layout?: ImageLayout }>({
+    url: card.image?.url || "",
+    layout: card.image?.layout || "standart",
+  });
   const [description, setDescription] = useState<string>(
     card.description?.value || ""
   );
@@ -66,6 +71,14 @@ export default function CardForm({ formAction }: CardFormProps) {
     card.settings || {
       font1: "Lato",
       font2: "Lato",
+      border: {
+        color: "",
+        radius: "round",
+      },
+      texture: {
+        background: "",
+        content: "",
+      },
       color: {
         background: "#FFFFFF",
         content: "#E5E7EB",
@@ -83,7 +96,7 @@ export default function CardForm({ formAction }: CardFormProps) {
   }, [title]);
 
   useEffect(() => {
-    setCard((prev) => ({ ...prev, image: { url: image } }));
+    setCard((prev) => ({ ...prev, image: image }));
   }, [image]);
 
   useEffect(() => {
@@ -132,14 +145,39 @@ export default function CardForm({ formAction }: CardFormProps) {
     }));
   }, [rarity]);
 
-  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleImageUpload(
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: ImageType
+  ) {
     const file = e.target.files?.[0] || null;
     if (!file) return;
 
     let tmp = URL.createObjectURL(file);
 
     const objectUrl = tmp;
-    setImage(objectUrl);
+    switch (type) {
+      case "main": {
+        setImage((prev) => ({ ...prev, url: objectUrl }));
+        break;
+      }
+
+      case "background": {
+        setSettings((prev) => ({
+          ...prev,
+          texture: { ...prev.texture, background: objectUrl },
+        }));
+        break;
+      }
+
+      case "content": {
+        setSettings((prev) => ({
+          ...prev,
+          texture: { ...prev.texture, content: objectUrl },
+        }));
+        break;
+      }
+    }
+
     // free memory
     for (let i = 0; i < objectUrl.length; i++) {
       return () => {
@@ -182,14 +220,9 @@ export default function CardForm({ formAction }: CardFormProps) {
     setAttributes(updated);
   }
 
-  async function handleTemplateChoose(template: ConvertedCardType) {
-    const formEntries: FormEntry[] = Object.entries(template.attributes!).map(
-      ([key, value], i) => ({ id: i, key: key, value: value })
-    );
-
-    setAttributes(formEntries);
-    setTemplateApplied(true);
-    setTemplateWindowOpened(false);
+  function handleImageLayourChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const layout = e.target.value as ImageLayout;
+    setImage((prev) => ({ ...prev, layout: layout }));
   }
 
   function handleRarityChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -203,6 +236,13 @@ export default function CardForm({ formAction }: CardFormProps) {
         className="flex flex-col items-center p-4 m-auto px-[5%]"
         action={action}
       >
+        <input
+          readOnly
+          className="hidden"
+          type="text"
+          name="id"
+          value={card.id}
+        />
         <FormSection name="Title" inputId="title">
           <input
             className="rounded-lg my-1 p-2 w-full text-center"
@@ -215,26 +255,75 @@ export default function CardForm({ formAction }: CardFormProps) {
         </FormSection>
 
         <FormSection name="Image" inputId="image">
-          <label
-            className="bg-blue-500 text-white py-1 px-4 rounded cursor-pointer"
-            htmlFor="image"
-          >
-            {card.image ? "Change Image" : "Upload Image"}
+          <label htmlFor="image">
+            <Button>{card.image?.url ? "Change Image" : "Upload Image"}</Button>
           </label>
+
           <input
             readOnly
             className="hidden"
             type="text"
-            name="imageURL"
-            value={image}
+            name="image-url"
+            value={image.url}
           />
           <input
             className="rounded m-auto my-1 text-center hidden"
             type="file"
+            accept=".jpg,.png"
             id="image"
             name="image"
-            onChange={handleImageUpload}
+            onChange={(e) => handleImageUpload(e, "main")}
           />
+          <fieldset className="flex mt-8">
+            <div
+              className="appearance-none w-[60px] h-[86px] rounded mx-4
+             bg-white  p-1 shadow-sm relative"
+            >
+              <div className="w-full h-1/2 bg-blue-500 box-border rounded-sm"></div>
+              <input
+                className="cursor-pointer top-0 left-0 appearance-none absolute 
+                w-full h-full outline-gray-400 hover:outline checked:outline 
+                 checked:outline-gray-500 z-10 rounded"
+                type="radio"
+                value="standart"
+                name="image-layout"
+                checked={card.image?.layout === "standart"}
+                onChange={handleImageLayourChange}
+              />
+            </div>
+            <div
+              className="appearance-none w-[60px] h-[86px] rounded mx-4
+             bg-white shadow-sm relative"
+            >
+              <div className="w-full h-[40%] bg-blue-500 box-border rounded-tl rounded-tr"></div>
+              <input
+                className="cursor-pointer top-0 left-0 appearance-none absolute 
+                w-full h-full outline-gray-400 hover:outline checked:outline 
+                 checked:outline-gray-500 z-10 rounded"
+                type="radio"
+                value="wide"
+                name="image-layout"
+                checked={card.image?.layout === "wide"}
+                onChange={handleImageLayourChange}
+              />
+            </div>
+            <div
+              className="appearance-none w-[60px] h-[86px] rounded mx-4
+             bg-white shadow-sm relative"
+            >
+              <div className="w-full h-full bg-blue-500 box-border rounded"></div>
+              <input
+                className="cursor-pointer top-0 left-0 appearance-none absolute 
+                w-full h-full outline-gray-400 hover:outline checked:outline 
+                 checked:outline-gray-500 z-10 rounded"
+                type="radio"
+                value="full"
+                name="image-layout"
+                checked={card.image?.layout === "full"}
+                onChange={handleImageLayourChange}
+              />
+            </div>
+          </fieldset>
         </FormSection>
 
         <FormSection name="Description" inputId="description">
@@ -248,23 +337,6 @@ export default function CardForm({ formAction }: CardFormProps) {
         </FormSection>
 
         <FormSection name="Attributes" inputId="value">
-          {/* Templates
-          <div className="flex justify-center">
-            <button
-              className="bg-blue-500 text-white p-1 px-4 rounded shadow-md"
-              onClick={() => setTemplateWindowOpened(true)}
-              type="button"
-            >
-              Choose a template
-            </button>
-            {templateWindowOpened && (
-              <TemplateWindow
-                onTemplateChoose={handleTemplateChoose}
-              ></TemplateWindow>
-            )}
-          </div> */}
-
-          {/* Fields */}
           {attributes.length > 0 && (
             <div className="my-4 w-full">
               {attributes.map((field) => (
@@ -365,6 +437,7 @@ export default function CardForm({ formAction }: CardFormProps) {
               type="background"
               settings={settings}
               setSettings={setSettings}
+              handleImageUpload={handleImageUpload}
             ></Color>
 
             <Color
@@ -372,6 +445,7 @@ export default function CardForm({ formAction }: CardFormProps) {
               type="content"
               settings={settings}
               setSettings={setSettings}
+              handleImageUpload={handleImageUpload}
             ></Color>
 
             <Color
@@ -385,11 +459,14 @@ export default function CardForm({ formAction }: CardFormProps) {
 
         <FormSection name="Rarity">
           {
-            <fieldset className="w-full flex justify-evenly">
+            <fieldset className="flex justify-center flex-wrap w-[250px]">
               <RarityRadio rarity="common"></RarityRadio>
+              <RarityRadio rarity="uncommon"></RarityRadio>
               <RarityRadio rarity="rare"></RarityRadio>
               <RarityRadio rarity="epic"></RarityRadio>
               <RarityRadio rarity="legendary"></RarityRadio>
+              <RarityRadio rarity="mythic"></RarityRadio>
+              <RarityRadio rarity="shadowed"></RarityRadio>
             </fieldset>
           }
           <div
@@ -405,18 +482,36 @@ export default function CardForm({ formAction }: CardFormProps) {
     </>
   );
 
+  function RarityRadio({ rarity }: { rarity: string }) {
+    return (
+      <input
+        className={`appearance-none w-10 h-10 rounded-full hover:outline
+                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2 my-1`}
+        style={{
+          backgroundColor:
+            rarity === "common" ? "white" : getRarityColors(rarity),
+        }}
+        type="radio"
+        name="rarity"
+        value={rarity}
+        checked={card.rarity === rarity}
+        onChange={handleRarityChange}
+      />
+    );
+  }
+
   function SubmitButton() {
     const { pending } = useFormStatus();
     return (
       <>
-        <div className="w-24 h-12 flex justify-center items-center">
+        <div className="w-full h-12 flex justify-center items-center">
           {pending ? (
             <div className="mt-4">
               <Spinner></Spinner>
             </div>
           ) : (
             <button
-              className="bg-blue-500 text-white p-1 px-8 rounded shadow-md mt-4 disabled:opacity-50"
+              className="bg-blue-500 w-full text-lg text-white p-4 rounded shadow-md mt-8 disabled:opacity-50"
               type="submit"
               disabled={userId === null}
             >
@@ -425,24 +520,6 @@ export default function CardForm({ formAction }: CardFormProps) {
           )}
         </div>
       </>
-    );
-  }
-
-  function RarityRadio({ rarity }: { rarity: string }) {
-    return (
-      <input
-        className={`appearance-none w-10 h-10 rounded-full hover:outline
-                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2`}
-        style={{
-          backgroundColor:
-            rarity === "common" ? "white" : getRarityColor(rarity),
-        }}
-        type="radio"
-        name="rarity"
-        value={rarity}
-        checked={card.rarity === rarity}
-        onChange={handleRarityChange}
-      />
     );
   }
 }
@@ -547,11 +624,16 @@ function Color({
   type,
   settings,
   setSettings,
+  handleImageUpload,
 }: {
   name: string;
   type: "background" | "content" | "text";
-  settings: any;
+  settings: CardSettings;
   setSettings: any;
+  handleImageUpload?: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "background" | "content"
+  ) => void;
 }) {
   const [color, setColor] = useState(settings?.color?.[type] || "#000000");
 
@@ -573,14 +655,41 @@ function Color({
       <label className="font-bold w-full" htmlFor={`color-${type}`}>
         {name}:
       </label>
-      <input
-        className="rounded m-1 w-4/5 text-center custom-color"
-        type="color"
-        id={`color-${type}`}
-        name={`color-${type}`}
-        value={color}
-        onChange={handleChange}
-      />
+      <div className="flex w-full">
+        <input
+          className="rounded min-h-10 h-auto w-4/5 text-center custom-color grow"
+          type="color"
+          id={`color-${type}`}
+          name={`color-${type}`}
+          value={color}
+          onChange={handleChange}
+        />
+        {type !== "text" && handleImageUpload ? (
+          <>
+            <label className="ml-2" htmlFor={`texture-${type}`}>
+              <Button>
+                {settings.texture && settings.texture[type]
+                  ? "Change Texture"
+                  : "Upload Texture"}
+              </Button>
+            </label>
+            <input
+              readOnly
+              className="hidden"
+              type="text"
+              name={`texture-${type}-url`}
+              value={settings.texture && settings.texture[type]}
+            />
+            <input
+              className="rounded m-auto my-1 text-center hidden"
+              type="file"
+              id={`texture-${type}`}
+              name={`texture-${type}`}
+              onChange={(e) => handleImageUpload(e, type)}
+            />
+          </>
+        ) : null}
+      </div>
     </div>
   );
 }

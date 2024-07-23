@@ -9,8 +9,10 @@ export default async function EditCard({ params }: { params: { id: string } }) {
   const templates = [] as ConvertedCardType[];
 
   return (
-    <CardProvider initialCard={card} templates={templates}>
-      <CardEditor action="update"></CardEditor>
-    </CardProvider>
+    <div className="bg-gray-300">
+      <CardProvider initialCard={card} templates={templates}>
+        <CardEditor action="update"></CardEditor>
+      </CardProvider>
+    </div>
   );
 }

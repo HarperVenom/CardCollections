@@ -14,7 +14,7 @@ export default async function NavBar() {
   const user = await currentUser();
 
   return (
-    <nav className="bg-gray-300 shadow-lg z-[2] h-16 relative">
+    <nav className="bg-white shadow z-[2] h-16 relative">
       <ul className="flex max-w-[1400px] h-full m-auto items-center z-[10] relative">
         <NavLinks></NavLinks>
         <div className="flex items-center ml-auto mr-4 z-[-3]">

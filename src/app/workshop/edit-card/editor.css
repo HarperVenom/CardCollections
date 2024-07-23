@@ -3,7 +3,6 @@
   -moz-appearance: none;
   appearance: none;
   background-color: transparent;
-  height: 2.5rem;
   width: 100%;
   padding: 0;
   border: none;
@@ -18,4 +17,21 @@
   outline: 2px solid gray;
   border-radius: 4px;
   border: none;
+}
+
+::-webkit-scrollbar.custom-scroll {
+  width: 8px;
+}
+::-webkit-scrollbar-track.custom-scroll {
+  background: transparent;
+  @apply my-2;
+}
+
+::-webkit-scrollbar-thumb.custom-scroll {
+  border-radius: 10px;
+  @apply bg-gray-400
+  /* background: rgb(185, 185, 185); */;
+}
+::-webkit-scrollbar-thumb.custom-scroll:hover {
+  @apply bg-gray-500;
 }

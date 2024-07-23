@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import db from "../db/drizzle";
 import { cards as cardsTable } from "../db/schema";
 import { CardType, ConvertedCardType } from "../types/cardTypes";
@@ -18,7 +17,7 @@ export async function getCards(): Promise<ConvertedCardType[]> {
     .from(cardsTable)
     .where(eq(cardsTable.authorId, user?.id || ""));
 
-  const cards = data.map((card) => convertCard(card));
+  const cards = data.map((card) => convertCard(card as CardType));
   return cards;
 }
 
@@ -32,11 +31,16 @@ export async function createCard(formState: any, formData: FormData) {
       authorId: user?.id || "",
       title: card.title,
       image: card.image,
+      imageLayout: card.imageLayout,
       description: card.description,
       attributes: card.attributes,
       category: card.category,
       font1: card.font1,
       font2: card.font2,
+      borderColor: card.borderColor,
+      borderRadius: card.borderRadius,
+      textureBackground: card.textureBackground,
+      textureContent: card.textureContent,
       colorBackground: card.colorBackground,
       colorContent: card.colorContent,
       colorText: card.colorText,
@@ -68,7 +72,7 @@ export async function getCard(id: string): Promise<ConvertedCardType> {
     .from(cardsTable)
     .where(eq(cardsTable.id, id))
     .limit(1);
-  return convertCard(data);
+  return convertCard(data as CardType);
 }
 
 export async function updateCard(
@@ -83,11 +87,16 @@ export async function updateCard(
       .set({
         title: card.title,
         image: card.image,
+        imageLayout: card.imageLayout,
         description: card.description,
         attributes: card.attributes,
         category: card.category,
         font1: card.font1,
         font2: card.font2,
+        borderColor: card.borderColor,
+        borderRadius: card.borderRadius,
+        textureBackground: card.textureBackground,
+        textureContent: card.textureContent,
         colorBackground: card.colorBackground,
         colorContent: card.colorContent,
         colorText: card.colorText,
@@ -130,6 +139,7 @@ function convertCard(card: CardType): ConvertedCardType {
     },
     image: {
       url: card.image!,
+      layout: card.imageLayout,
     },
     description: {
       value: card.description!,
@@ -141,6 +151,14 @@ function convertCard(card: CardType): ConvertedCardType {
     settings: {
       font1: card.font1,
       font2: card.font2,
+      border: {
+        color: card.borderColor,
+        radius: card.borderRadius,
+      },
+      texture: {
+        background: card.textureBackground,
+        content: card.textureContent,
+      },
       color: {
         background: card.colorBackground,
         content: card.colorContent,
@@ -152,24 +170,30 @@ function convertCard(card: CardType): ConvertedCardType {
 }
 
 async function getCardFromForm(formData: FormData) {
+  const id = formData.get("id") as string;
+
   const keys = formData.getAll("attribute-name") as string[];
   const values = formData.getAll("attribute-value") as string[];
 
   const image = formData.get("image") as File;
+  const textureBackground = formData.get("texture-background") as File;
+  const textureContent = formData.get("texture-content") as File;
 
-  let imgUrl: string;
-
-  if (image.size !== 0) {
-    const res = await backendClient.publicFiles.upload({
-      content: {
-        blob: new Blob([image], { type: image.type }),
-        extension: "png",
-      },
-    });
-    imgUrl = res.url;
-  } else {
-    imgUrl = formData.get("imageURL")?.toString() as string;
-  }
+  let imgUrl = await getUploadedImgUrl(
+    image,
+    formData.get("image-url") as string,
+    "image"
+  );
+  let textureBackgroundURL = await getUploadedImgUrl(
+    textureBackground,
+    formData.get("texture-background-url") as string,
+    "background"
+  );
+  let textureContentURL = await getUploadedImgUrl(
+    textureContent,
+    formData.get("texture-content-url") as string,
+    "content"
+  );
 
   const attributes = keys.reduce((acc, key, index) => {
     acc[key] = values[index];
@@ -180,16 +204,64 @@ async function getCardFromForm(formData: FormData) {
   const card = {
     title: formData.get("title")?.toString() || "",
     image: imgUrl,
+    imageLayout: formData.get("image-layout")?.toString() || "",
     description: formData.get("description")?.toString() || "",
     attributes: attributesString,
     category: formData.get("category")?.toString() || "",
     font1: formData.get("font1")?.toString() || "",
     font2: formData.get("font2")?.toString() || "",
+    borderColor: formData.get("border-color")?.toString() || "",
+    borderRadius:
+      (formData.get("border-raduis")?.toString() as "round" | "square") ||
+      "round",
+    textureBackground: textureBackgroundURL,
+    textureContent: textureContentURL,
     colorBackground: formData.get("color-background")?.toString() || "",
     colorContent: formData.get("color-content")?.toString() || "",
     colorText: formData.get("color-text")?.toString() || "",
     rarity: formData.get("rarity")?.toString() || "",
+    rarityColor: formData.get("rarity-color")?.toString() || "",
   };
 
   return card;
+
+  async function getUploadedImgUrl(
+    img: File,
+    initialURL: string,
+    type: "image" | "background" | "content"
+  ): Promise<string> {
+    let imgUrl: string;
+
+    if (img.size !== 0) {
+      const res = await backendClient.publicFiles.upload({
+        content: {
+          blob: new Blob([img], { type: img.type }),
+          extension: "png",
+        },
+      });
+      imgUrl = res.url;
+    } else {
+      imgUrl = initialURL;
+    }
+
+    if (imgUrl !== initialURL) {
+      const card = await getCard(id);
+      const previousURL = (() => {
+        switch (type) {
+          case "image":
+            return card.image?.url;
+          case "background":
+            return card.settings?.texture?.background;
+          case "content":
+            return card.settings?.texture?.content;
+        }
+      })();
+      if (previousURL) {
+        const res = await backendClient.publicFiles.deleteFile({
+          url: previousURL,
+        });
+      }
+    }
+    return imgUrl;
+  }
 }

@@ -6,6 +6,7 @@ import { rubik } from "../../ui/fonts";
 import Card from "@/components/card";
 import { createCard, updateCard } from "../../../../actions/cardActions";
 import CardForm from "./card-form";
+import "./editor.css";
 
 export default function CardEditor({
   action,
@@ -27,24 +28,27 @@ export default function CardEditor({
   }, []);
 
   return (
-    <div className="flex flex-col-reverse flex-grow md:overflow-hidden md:flex-row">
+    <div
+      className="max-w-[1200px] w-screen m-auto flex flex-col 
+    grow md:overflow-hidden md:flex-row"
+    >
+      <div className="grow p-4 flex min-h-[600px] justify-center items-center">
+        <Card data={card}></Card>
+      </div>
       <div
-        className="w-full md:w-1/3 md:min-w-[400px] py-6 bg-gray-300 rounded 
-      shadow-xl overflow-x-hidden overflow-y-auto"
+        className="w-full md:w-1/3 md:min-w-[400px] py-6 bg-gray-300 
+       overflow-x-hidden overflow-y-auto"
+        style={{ maxHeight: windowWidth >= 768 ? "calc(100vh - 4rem)" : "" }}
       >
         <h2
-          className={`font-bold text-3xl text-center text-gray-500
+          className={`font-bold text-3xl text-center text-gray-500 mb-8
             ${rubik.className}`}
         >
-          Create your card:
+          Edit your card:
         </h2>
         <CardForm
           formAction={action === "create" ? createCard : updateAction}
         ></CardForm>
-      </div>
-
-      <div className="grow p-4 flex min-h-[500px] justify-center items-center bg-gray-400">
-        <Card data={card}></Card>
       </div>
     </div>
   );
