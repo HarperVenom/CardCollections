@@ -64,6 +64,20 @@
       "when": 1721732442937,
       "tag": "0008_gifted_grandmaster",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1721815656450,
+      "tag": "0009_fearless_iron_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1721815706983,
+      "tag": "0010_loose_tusk",
+      "breakpoints": true
     }
   ]
 }

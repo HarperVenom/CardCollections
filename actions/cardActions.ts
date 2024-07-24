@@ -245,21 +245,23 @@ async function getCardFromForm(formData: FormData) {
     }
 
     if (imgUrl !== initialURL) {
-      const card = await getCard(id);
-      const previousURL = (() => {
-        switch (type) {
-          case "image":
-            return card.image?.url;
-          case "background":
-            return card.settings?.texture?.background;
-          case "content":
-            return card.settings?.texture?.content;
+      if (id) {
+        const card = await getCard(id);
+        const previousURL = (() => {
+          switch (type) {
+            case "image":
+              return card.image?.url;
+            case "background":
+              return card.settings?.texture?.background;
+            case "content":
+              return card.settings?.texture?.content;
+          }
+        })();
+        if (previousURL) {
+          const res = await backendClient.publicFiles.deleteFile({
+            url: previousURL,
+          });
         }
-      })();
-      if (previousURL) {
-        const res = await backendClient.publicFiles.deleteFile({
-          url: previousURL,
-        });
       }
     }
     return imgUrl;

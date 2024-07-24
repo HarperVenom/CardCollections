@@ -1,17 +1,19 @@
 import { relations } from "drizzle-orm";
-import { text, pgTable, uuid, timestamp, json } from "drizzle-orm/pg-core";
+import {
+  text,
+  pgTable,
+  uuid,
+  timestamp,
+  json,
+  integer,
+} from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull(),
   imgUrl: text("imgUrl"),
+  balance: integer("balance").notNull().default(100),
 });
-
-// export const userRelations = relations(users, ({ many }) => ({
-//   cards: many(cards),
-//   publicCards: many(publicCards),
-//   collections: many(collections),
-// }));
 
 export const cards = pgTable("cards", {
   id: uuid("id").primaryKey().defaultRandom(),

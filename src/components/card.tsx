@@ -144,8 +144,8 @@ export default function Card({
           {/* TITLE WITHOUT IMAGE */}
           {!card.image?.url && card.title && card.title.value && (
             <div
-              className={`text-center min-w-36 max-w-[200px] max-h-16 mx-auto text-lg
-          bg-gray-200 py-1 px-4 rounded-full
+              className={`z-10 text-center min-w-36 max-w-[200px] max-h-16 mx-auto text-lg
+          bg-gray-200 py-1 px-4 rounded-full relative 
           overflow-hidden font-bold ${getFontClass(card.settings?.font1!)}`}
               style={{
                 backgroundColor: card.settings?.color?.content,
