@@ -20,7 +20,7 @@ export default async function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${lato.className}`}>
-          <NextUIProvider className="bg-gray-200 min-h-screen flex flex-col overflow-x-hidden`">
+          <NextUIProvider className="bg-zinc-200 min-h-svh flex flex-col overflow-x-hidden`">
             <NavBar></NavBar>
             <EdgeStoreProvider>{children}</EdgeStoreProvider>
           </NextUIProvider>

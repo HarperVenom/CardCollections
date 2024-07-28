@@ -12,7 +12,7 @@ export default async function Workshop() {
           <li className="flex">
             <div
               className="
-            flex flex-col justify-center text-2xl text-gray-500 my-8"
+            flex flex-col justify-center text-2xl text-zinc-500 my-8"
             >
               {`${cards.length}/7`}
             </div>

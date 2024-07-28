@@ -6,7 +6,7 @@ export default function CreateCard() {
   const templates = [] as ConvertedCardType[];
 
   return (
-    <div className="bg-gray-300">
+    <div className="bg-zinc-200">
       <CardProvider
         initialCard={{ id: "", rarity: "common" }}
         templates={templates}

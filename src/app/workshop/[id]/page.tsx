@@ -11,7 +11,7 @@ export default async function CardPage({ params }: { params: { id: string } }) {
         <Card data={card}></Card>
         <div className="flex mt-16">
           <Link
-            className="bg-blue-500 text-white text-lg 
+            className="bg-primary-500 text-white text-lg 
           mx-2 px-8 py-2 rounded"
             href={`/workshop/edit-card/${card.id}`}
           >

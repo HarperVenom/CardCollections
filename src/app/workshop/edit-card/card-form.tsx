@@ -27,15 +27,7 @@ import {
 import { useAuth } from "@clerk/nextjs";
 import { Spinner } from "@nextui-org/spinner";
 import { Button } from "@/components/button";
-
-interface FormErrors {
-  name?: string[];
-  nickname?: string[];
-}
-
-interface FormState {
-  errors: FormErrors;
-}
+import FormSection from "@/components/form-section";
 
 interface CardFormProps {
   formAction: any;
@@ -48,7 +40,7 @@ export default function CardForm({ formAction }: CardFormProps) {
 
   const { card, setCard } = useContext(CardContext);
 
-  const [formState, action] = useFormState<FormState>(formAction, {
+  const [formState, action] = useFormState(formAction, {
     errors: {},
   });
 
@@ -279,11 +271,11 @@ export default function CardForm({ formAction }: CardFormProps) {
               className="appearance-none w-[60px] h-[86px] rounded mx-4
              bg-white  p-1 shadow-sm relative"
             >
-              <div className="w-full h-1/2 bg-blue-500 box-border rounded-sm"></div>
+              <div className="w-full h-1/2 bg-primary-500 box-border rounded-sm"></div>
               <input
                 className="cursor-pointer top-0 left-0 appearance-none absolute 
-                w-full h-full outline-gray-400 hover:outline checked:outline 
-                 checked:outline-gray-500 z-10 rounded"
+                w-full h-full outline-zinc-400 hover:outline checked:outline 
+                 checked:outline-zinc-500 z-10 rounded"
                 type="radio"
                 value="standart"
                 name="image-layout"
@@ -295,11 +287,11 @@ export default function CardForm({ formAction }: CardFormProps) {
               className="appearance-none w-[60px] h-[86px] rounded mx-4
              bg-white shadow-sm relative"
             >
-              <div className="w-full h-[40%] bg-blue-500 box-border rounded-tl rounded-tr"></div>
+              <div className="w-full h-[40%] bg-primary-500 box-border rounded-tl rounded-tr"></div>
               <input
                 className="cursor-pointer top-0 left-0 appearance-none absolute 
-                w-full h-full outline-gray-400 hover:outline checked:outline 
-                 checked:outline-gray-500 z-10 rounded"
+                w-full h-full outline-zinc-400 hover:outline checked:outline 
+                 checked:outline-zinc-500 z-10 rounded"
                 type="radio"
                 value="wide"
                 name="image-layout"
@@ -311,11 +303,11 @@ export default function CardForm({ formAction }: CardFormProps) {
               className="appearance-none w-[60px] h-[86px] rounded mx-4
              bg-white shadow-sm relative"
             >
-              <div className="w-full h-full bg-blue-500 box-border rounded"></div>
+              <div className="w-full h-full bg-primary-500 box-border rounded"></div>
               <input
                 className="cursor-pointer top-0 left-0 appearance-none absolute 
-                w-full h-full outline-gray-400 hover:outline checked:outline 
-                 checked:outline-gray-500 z-10 rounded"
+                w-full h-full outline-zinc-400 hover:outline checked:outline 
+                 checked:outline-zinc-500 z-10 rounded"
                 type="radio"
                 value="full"
                 name="image-layout"
@@ -367,7 +359,7 @@ export default function CardForm({ formAction }: CardFormProps) {
                   </div>
                   <button
                     type="button"
-                    className="w-7 h-full bg-gray-400 p-1 mx-1 rounded"
+                    className="w-7 h-full bg-zinc-400 p-1 mx-1 rounded"
                     onClick={() => handleRemoveAttribute(field.id)}
                   >
                     <Cross stroke="white" width={3}></Cross>
@@ -381,7 +373,7 @@ export default function CardForm({ formAction }: CardFormProps) {
           <div className="flex justify-center">
             {templateApplied ? (
               <button
-                className="bg-gray-400 text-white p-1 px-4 rounded shadow-md"
+                className="bg-zinc-400 text-white p-1 px-4 rounded shadow-md"
                 type="button"
                 onClick={() => setTemplateApplied(false)}
               >
@@ -389,7 +381,7 @@ export default function CardForm({ formAction }: CardFormProps) {
               </button>
             ) : (
               <button
-                className="bg-gray-400 text-white p-1 px-4 rounded shadow-md"
+                className="bg-zinc-400 text-white p-1 px-4 rounded shadow-md"
                 type="button"
                 onClick={handleAddAttribute}
               >
@@ -416,7 +408,7 @@ export default function CardForm({ formAction }: CardFormProps) {
         </FormSection>
 
         <FormSection name="Settings">
-          <div className="flex flex-col w-full text-gray-500">
+          <div className="flex flex-col w-full text-zinc-500">
             <Font
               title="Font 1"
               name="font1"
@@ -431,7 +423,7 @@ export default function CardForm({ formAction }: CardFormProps) {
               setSettings={setSettings}
             ></Font>
           </div>
-          <div className="text-gray-500 w-full">
+          <div className="text-zinc-500 w-full">
             <Color
               name="Background"
               type="background"
@@ -471,7 +463,7 @@ export default function CardForm({ formAction }: CardFormProps) {
           }
           <div
             className={`w-full justify-center text-center
-           mt-2 italic text-gray-500`}
+           mt-2 italic text-zinc-500`}
           >
             {card.rarity}
           </div>
@@ -486,7 +478,7 @@ export default function CardForm({ formAction }: CardFormProps) {
     return (
       <input
         className={`appearance-none w-10 h-10 rounded-full hover:outline
-                  outline-gray-400 cursor-pointer checked:outline checked:outline-gray-500 mx-2 my-1`}
+                  outline-zinc-400 cursor-pointer checked:outline checked:outline-zinc-500 mx-2 my-1`}
         style={{
           backgroundColor:
             rarity === "common" ? "white" : getRarityColors(rarity),
@@ -511,7 +503,7 @@ export default function CardForm({ formAction }: CardFormProps) {
             </div>
           ) : (
             <button
-              className="bg-blue-500 w-full text-lg text-white p-4 rounded shadow-md mt-8 disabled:opacity-50"
+              className="bg-primary-500 w-full text-lg text-white p-4 rounded shadow-md mt-8 disabled:opacity-50"
               type="submit"
               disabled={userId === null}
             >
@@ -522,35 +514,6 @@ export default function CardForm({ formAction }: CardFormProps) {
       </>
     );
   }
-}
-
-function FormSection({
-  children,
-  name,
-  inputId,
-}: {
-  children: React.ReactNode;
-  name: string;
-  inputId?: string;
-}) {
-  return (
-    <div
-      className="rounded-lg border-2 border-gray-400
-         w-full p-4 py-10 flex flex-col items-center 
-         justify-center m-1 mt-6 relative"
-    >
-      <div className="w-full max-w-[300px] flex flex-col items-center">
-        <label
-          className="font-bold text-center text-2xl absolute 
-        top-0 -translate-y-2/3 bg-gray-300 px-2 text-gray-500 self-start"
-          htmlFor={inputId}
-        >
-          {name}
-        </label>
-        {children}
-      </div>
-    </div>
-  );
 }
 
 function Font({

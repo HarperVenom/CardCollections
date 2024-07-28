@@ -49,7 +49,7 @@ export default function NavLinks({ user }: { user: User | null }) {
       {windowWidth < 768 ? (
         <div className="flex h-full items-center">
           <button
-            className="z-10 menu-button transition-all p-2 mx-1 hover:bg-blue-300 hover:text-white active:bg-blue-400 rounded "
+            className="z-10 menu-button transition-all p-2 mx-1 hover:bg-primary-500 hover:text-white active:bg-primary-600 rounded "
             onClick={() => setMenuOpened((prev) => !prev)}
           >
             <MenuIcon stroke="rgb(107 114 128)"></MenuIcon>
@@ -78,11 +78,9 @@ export default function NavLinks({ user }: { user: User | null }) {
           >
             <li className="flex">
               <Link
-                className="transition-all flex items-center w-full h-full py-4 px-8 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
-                style={{
-                  backgroundColor: pathName === "/" ? "rgb(96 165 250)" : "",
-                  color: pathName === "/" ? "white" : "",
-                }}
+                className={`${pathName === "/" ? "bg-primary-500" : ""} ${
+                  pathName === "/" ? "text-white" : "text-zinc-600"
+                } transition-all flex items-center w-full py-4 px-8 text-xl hover:bg-primary-500 hover:text-white active:bg-primary-600`}
                 href="/"
               >
                 Home
@@ -90,13 +88,13 @@ export default function NavLinks({ user }: { user: User | null }) {
             </li>
             <li className="flex">
               <Link
-                className="transition-all flex items-center w-full py-4 px-8 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
-                style={{
-                  backgroundColor: pathName.includes("/workshop")
-                    ? "rgb(96 165 250)"
-                    : "",
-                  color: pathName.includes("/workshop") ? "white" : "",
-                }}
+                className={`${
+                  pathName.includes("/workshop") ? "bg-primary-500" : ""
+                } ${
+                  pathName.includes("/workshop")
+                    ? "text-white"
+                    : "text-zinc-600"
+                } transition-all flex items-center w-full py-4 px-8 text-xl hover:bg-primary-500 hover:text-white active:bg-primary-600`}
                 href="/workshop"
               >
                 Workshop
@@ -104,12 +102,13 @@ export default function NavLinks({ user }: { user: User | null }) {
             </li>
             <li className="flex">
               <Link
-                className="transition-all flex items-center w-full py-4 px-8 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
-                style={{
-                  backgroundColor:
-                    pathName === "/collections" ? "rgb(96 165 250)" : "",
-                  color: pathName === "/collections" ? "white" : "",
-                }}
+                className={`${
+                  pathName.includes("/collections") ? "bg-primary-500" : ""
+                } ${
+                  pathName.includes("/collections")
+                    ? "text-white"
+                    : "text-zinc-600"
+                } transition-all flex items-center w-full py-4 px-8 text-xl hover:bg-primary-500 hover:text-white active:bg-primary-600`}
                 href="/collections"
               >
                 Collections
@@ -119,8 +118,8 @@ export default function NavLinks({ user }: { user: User | null }) {
               <>
                 <li
                   className="mt-auto flex transition-all items-center w-full 
-                      py-4 px-8 text-lg text-gray-500 hover:bg-blue-300 
-                      hover:text-white active:bg-blue-400 cursor-pointer
+                      py-4 px-8 text-lg text-zinc-600 hover:bg-primary-500 
+                      hover:text-white active:bg-primary-600 cursor-pointer
                       gap-2 "
                 >
                   {user.username}
@@ -136,8 +135,8 @@ export default function NavLinks({ user }: { user: User | null }) {
                 </li>
                 <li
                   className="flex transition-all items-center w-full 
-                      py-4 px-8 text-lg text-gray-500 hover:bg-blue-300 
-                      hover:text-white active:bg-blue-400 cursor-pointer
+                      py-4 px-8 text-lg text-zinc-600 hover:bg-primary-500 
+                      hover:text-white active:bg-primary-600 cursor-pointer
                       gap-2 "
                 >
                   Balance
@@ -152,8 +151,8 @@ export default function NavLinks({ user }: { user: User | null }) {
                     <SignOutButton>
                       <div
                         className="transition-all flex items-center w-full 
-                      py-4 px-8 text-lg text-gray-500 hover:bg-gray-300 
-                      hover:text-white active:bg-gray-400 cursor-pointer
+                      py-4 px-8 text-lg text-zinc-600 hover:bg-zinc-500 
+                      hover:text-white active:bg-zinc-600 cursor-pointer
                       "
                       >
                         Sign Out
@@ -171,8 +170,8 @@ export default function NavLinks({ user }: { user: User | null }) {
                   <Link href={"/sign-in"}>
                     <div
                       className="transition-all flex items-center w-full 
-                      py-4 px-8 text-lg text-gray-500 hover:bg-blue-300 
-                      hover:text-white active:bg-blue-400 cursor-pointer"
+                      py-4 px-8 text-lg text-zinc-600 hover:bg-primary-500 
+                      hover:text-white active:bg-primary-600 cursor-pointer"
                     >
                       Sign In
                     </div>
@@ -209,14 +208,12 @@ function Links({
 }) {
   const pathName = usePathname();
   return (
-    <ul className="flex max-w-[1400px] w-screen h-full m-auto items-center z-[10] relative">
+    <ul className="flex max-w-[1600px] w-screen h-full m-auto items-center z-[10] relative">
       <li className="flex h-full">
         <Link
-          className="transition-all flex items-center h-full px-6 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
-          style={{
-            backgroundColor: pathName === "/" ? "rgb(96 165 250)" : "",
-            color: pathName === "/" ? "white" : "",
-          }}
+          className={` ${pathName === "/" ? "bg-primary-500" : ""} ${
+            pathName === "/" ? "text-white" : "text-zinc-600"
+          } transition-all flex items-center h-full px-6 text-xl  hover:bg-primary-500 hover:text-white active:bg-primary-600`}
           href="/"
         >
           Home
@@ -224,13 +221,11 @@ function Links({
       </li>
       <li className="flex h-full">
         <Link
-          className="transition-all flex items-center px-6 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
-          style={{
-            backgroundColor: pathName.includes("/workshop")
-              ? "rgb(96 165 250)"
-              : "",
-            color: pathName.includes("/workshop") ? "white" : "",
-          }}
+          className={`${
+            pathName.includes("/workshop") ? "bg-primary-500" : ""
+          } ${
+            pathName.includes("/workshop") ? "text-white" : "text-zinc-600"
+          } transition-all flex items-center h-full px-6 text-xl  hover:bg-primary-500 hover:text-white active:bg-primary-600`}
           href="/workshop"
         >
           Workshop
@@ -238,12 +233,11 @@ function Links({
       </li>
       <li className="flex h-full">
         <Link
-          className="transition-all flex items-center px-6 text-xl text-gray-500 hover:bg-blue-300 hover:text-white active:bg-blue-400"
-          style={{
-            backgroundColor:
-              pathName === "/collections" ? "rgb(96 165 250)" : "",
-            color: pathName === "/collections" ? "white" : "",
-          }}
+          className={` ${
+            pathName.includes("/collections") ? "bg-primary-500" : ""
+          } ${
+            pathName.includes("/collections") ? "text-white" : "text-zinc-600"
+          } transition-all flex items-center h-full px-6 text-xl  hover:bg-primary-500 hover:text-white active:bg-primary-600`}
           href="/collections"
         >
           Collections
@@ -272,16 +266,16 @@ function Links({
                 <ul>
                   <Link
                     className="mt-auto flex transition-all items-center w-full 
-                      py-4 px-16 text-xl text-gray-500 hover:bg-blue-300 
-                      hover:text-white active:bg-blue-400 cursor-pointer justify-center"
+                      py-4 px-16 text-xl text-zinc-600 hover:bg-primary-500 
+                      hover:text-white active:bg-primary-600 cursor-pointer justify-center"
                     href={""}
                   >
                     Profile
                   </Link>
                   <Link
                     className="mt-auto flex transition-all items-center w-full 
-                      py-4 px-16 text-xl text-gray-500 hover:bg-blue-300 
-                      hover:text-white active:bg-blue-400 cursor-pointer justify-center"
+                      py-4 px-16 text-xl text-zinc-600 hover:bg-primary-500 
+                      hover:text-white active:bg-primary-600 cursor-pointer justify-center"
                     href={"/"}
                   >
                     Balance
@@ -296,8 +290,8 @@ function Links({
                       <SignOutButton>
                         <div
                           className="transition-all flex items-center w-full 
-                      py-4 px-16 text-xl text-gray-500 hover:bg-gray-300 
-                      hover:text-white active:bg-gray-400 cursor-pointer text-nowrap 
+                      py-4 px-16 text-xl text-zinc-600 hover:bg-zinc-500 
+                      hover:text-white active:bg-zinc-600 cursor-pointer text-nowrap 
                       justify-center"
                         >
                           Sign Out
@@ -336,9 +330,9 @@ function ProfilePreview({
   return (
     <button
       onClick={() => onClick((prev) => !prev)}
-      className="select-none transition-all rounded justify-center w-full flex items-center gap-4 px-4 h-full cursor-pointer hover:bg-gray-200"
+      className="select-none transition-all rounded justify-center w-full flex items-center gap-4 px-4 h-full cursor-pointer hover:bg-zinc-200"
     >
-      <div className="flex items-center gap-1 text-2xl text-gray-500 font-bold">
+      <div className="flex items-center gap-1 text-2xl text-zinc-600 font-bold">
         <Coin></Coin>
         <div>{user.balance}</div>
       </div>

@@ -47,6 +47,13 @@ export type ConvertedCardType = {
   rarity: string;
 };
 
+export type PublicCardType = {
+  id: string;
+  authorId: string;
+  publishedAt: Date;
+  collectionId: string;
+};
+
 export type CardSettings = {
   font1?: string;
   font2?: string;

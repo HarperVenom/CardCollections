@@ -36,12 +36,12 @@ export default function CardEditor({
         <Card data={card}></Card>
       </div>
       <div
-        className="w-full md:w-1/3 md:min-w-[400px] py-6 bg-gray-300 
+        className="w-full md:w-1/3 md:min-w-[400px] py-6
        overflow-x-hidden overflow-y-auto"
         style={{ maxHeight: windowWidth >= 768 ? "calc(100vh - 4rem)" : "" }}
       >
         <h2
-          className={`font-bold text-3xl text-center text-gray-500 mb-8
+          className={`font-bold text-3xl text-center text-zinc-500 mb-8
             ${rubik.className}`}
         >
           Edit your card:

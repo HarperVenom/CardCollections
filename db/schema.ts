@@ -70,16 +70,18 @@ export const publicCardsRelations = relations(publicCards, ({ one }) => ({
 
 export const collections = pgTable("collections", {
   id: uuid("id").primaryKey().defaultRandom(),
-  authorId: text("authorId")
+  ownerId: text("ownerId")
     .notNull()
     .references(() => users.id),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export const collectionsRelations = relations(collections, ({ one, many }) => ({
   cards: many(publicCards),
   author: one(users, {
-    fields: [collections.authorId],
+    fields: [collections.ownerId],
     references: [users.id],
   }),
 }));
