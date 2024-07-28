@@ -8,9 +8,7 @@ import CollectionList from "@/components/collection-list";
 export default async function CollectionsPage() {
   const clerkUser = await currentUser();
   const user = clerkUser ? await getUser(clerkUser.id) : null;
-  const collections = await getCollections(user?.id);
-
-  console.log(collections);
+  const collections = user ? await getCollections(user?.id) : [];
 
   return (
     <div className="flex-grow flex flex-col items-center">

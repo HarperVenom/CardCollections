@@ -54,6 +54,19 @@ export default function NavLinks({ user }: { user: User | null }) {
           >
             <MenuIcon stroke="rgb(107 114 128)"></MenuIcon>
           </button>
+          {!user && (
+            <div className="ml-auto mr-2 flex items-center">
+              <ClerkLoading>
+                <Spinner></Spinner>
+              </ClerkLoading>
+              <ClerkLoaded>
+                <Link href={"/sign-in"}>
+                  <Button>Sign In</Button>
+                </Link>
+              </ClerkLoaded>
+            </div>
+          )}
+
           <div
             className="z-[8] fixed w-screen h-screen top-0 bg-black opacity-30 transition-all cursor-pointer "
             style={{
@@ -71,7 +84,7 @@ export default function NavLinks({ user }: { user: User | null }) {
             </div>
           )}
           <ul
-            className="z-[9] pt-16 fixed min-w-64 h-screen flex flex-col bg-white transition-all top-0 "
+            className="z-[9] pt-16 fixed min-w-64 h-svh flex flex-col bg-white transition-all top-0 "
             style={{
               transform: menuOpened ? "translate(0, 0)" : "translate(-100%, 0)",
             }}
@@ -304,16 +317,16 @@ function Links({
             )}
           </>
         ) : (
-          <>
+          <div className="ml-auto flex items-center">
             <ClerkLoading>
               <Spinner></Spinner>
             </ClerkLoading>
             <ClerkLoaded>
-              <Link className="ml-auto mr-2" href={"/sign-in"}>
+              <Link href={"/sign-in"}>
                 <Button>Sign In</Button>
               </Link>
             </ClerkLoaded>
-          </>
+          </div>
         )}
       </li>
     </ul>
