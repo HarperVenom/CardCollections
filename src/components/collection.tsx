@@ -2,7 +2,11 @@ import Link from "next/link";
 import { getCollectionСards } from "../../actions/collectionActions";
 import { CollectionType } from "../../types/collectionTypes";
 
-export default async function ({ collection }: { collection: CollectionType }) {
+export default async function Collection({
+  collection,
+}: {
+  collection: CollectionType;
+}) {
   const collectionCards = await getCollectionСards(collection.id);
   return (
     <Link

@@ -12,7 +12,7 @@ export default function CollectionList({
       grid-flow-dense grid-cols-[repeat(auto-fit,300px)] gap-8 place-content-center"
     >
       {collections.map((collection) => (
-        <Collection collection={collection}></Collection>
+        <Collection key={collection.id} collection={collection}></Collection>
       ))}
     </div>
   );
