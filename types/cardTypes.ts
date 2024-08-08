@@ -52,6 +52,7 @@ export type PublicCardType = {
   authorId: string;
   publishedAt: Date;
   collectionId: string;
+  cardContent: CardType;
 };
 
 export type CardSettings = {

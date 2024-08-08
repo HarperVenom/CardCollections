@@ -1,4 +1,3 @@
-import { Button } from "@/components/button";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { getUser } from "../../../actions/userAtions";
@@ -11,7 +10,7 @@ export default async function CollectionsPage() {
   const collections = user ? await getCollections(user?.id) : [];
 
   return (
-    <div className="flex-grow flex flex-col items-center">
+    <div className="grow flex flex-col items-center">
       <div className="flex items-center h-fit">
         <div
           className="
@@ -21,7 +20,7 @@ export default async function CollectionsPage() {
         </div>
         {collections.length < 3 && (
           <Link className="my-8 mx-4" href={"/collections/create"}>
-            <Button>Create Collection</Button>
+            <button className="button">Create Collection</button>
           </Link>
         )}
       </div>

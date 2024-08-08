@@ -29,10 +29,10 @@ export default function CardEditor({
 
   return (
     <div
-      className="max-w-[1200px] w-screen m-auto flex flex-col 
+      className="max-w-[1200px] max-w-screen m-auto flex flex-col 
     grow md:overflow-hidden md:flex-row"
     >
-      <div className="grow p-4 flex min-h-[600px] justify-center items-center">
+      <div className="grow box-border flex min-h-[600px] justify-center items-center">
         <Card data={card}></Card>
       </div>
       <div

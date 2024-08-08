@@ -6,6 +6,7 @@ import {
   timestamp,
   json,
   integer,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -55,6 +56,9 @@ export const publicCards = pgTable("publicCards", {
   collectionId: uuid("collectionId")
     .notNull()
     .references(() => collections.id),
+  cardId: uuid("cardId")
+    .notNull()
+    .references(() => cards.id),
 });
 
 export const publicCardsRelations = relations(publicCards, ({ one }) => ({
@@ -65,6 +69,10 @@ export const publicCardsRelations = relations(publicCards, ({ one }) => ({
   collection: one(collections, {
     fields: [publicCards.collectionId],
     references: [collections.id],
+  }),
+  cardContent: one(cards, {
+    fields: [publicCards.cardId],
+    references: [cards.id],
   }),
 }));
 

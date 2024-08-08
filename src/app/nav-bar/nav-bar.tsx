@@ -7,7 +7,7 @@ export default async function NavBar() {
   const user = clerkUser ? await getUser(clerkUser.id) : null;
 
   return (
-    <nav className="bg-white shadow z-[2] h-16 relative">
+    <nav className="sticky top-0 bg-white shadow z-[2] h-16">
       <NavLinks user={user}></NavLinks>
     </nav>
   );

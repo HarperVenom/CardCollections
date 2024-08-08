@@ -15,7 +15,6 @@ import "./menu-button.css";
 import { User } from "../../../types/userTypes";
 import { ClerkLoaded, ClerkLoading, SignOutButton } from "@clerk/nextjs";
 import { Spinner } from "@nextui-org/spinner";
-import { Button } from "@/components/button";
 import Coin from "@/assets/coin";
 
 export default function NavLinks({ user }: { user: User | null }) {
@@ -60,8 +59,8 @@ export default function NavLinks({ user }: { user: User | null }) {
                 <Spinner></Spinner>
               </ClerkLoading>
               <ClerkLoaded>
-                <Link href={"/sign-in"}>
-                  <Button>Sign In</Button>
+                <Link className="button" href={"/sign-in"}>
+                  Sign In
                 </Link>
               </ClerkLoaded>
             </div>
@@ -322,8 +321,8 @@ function Links({
               <Spinner></Spinner>
             </ClerkLoading>
             <ClerkLoaded>
-              <Link href={"/sign-in"}>
-                <Button>Sign In</Button>
+              <Link className="button" href={"/sign-in"}>
+                Sign In
               </Link>
             </ClerkLoaded>
           </div>

@@ -1,7 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { collections, publicCards } from "../db/schema";
+import { cards as cardsTable, collections, publicCards } from "../db/schema";
 import { CollectionType } from "../types/collectionTypes";
 import db from "../db/drizzle";
 import { currentUser } from "@clerk/nextjs/server";
@@ -12,6 +12,7 @@ import {
   ConvertedCardType,
   PublicCardType,
 } from "../types/cardTypes";
+import { convertCard } from "@/utils/utils";
 
 export async function getCollections(id?: string): Promise<CollectionType[]> {
   const data = !id
@@ -64,13 +65,23 @@ export async function getCollection(id: string): Promise<CollectionType> {
 
 export async function getCollectionСards(
   id: string
-): Promise<PublicCardType[]> {
-  const data = await db
+): Promise<ConvertedCardType[]> {
+  const sq = db
     .select()
     .from(publicCards)
-    .where(eq(publicCards.collectionId, id));
+    .where(eq(publicCards.collectionId, id))
+    .as("sq");
 
-  return data;
+  const data = await db
+    .select()
+    .from(cardsTable)
+    .innerJoin(sq, eq(cardsTable.id, sq.cardId));
+
+  const cards = data.map((card) => convertCard(card.cards as CardType));
+
+  console.log(cards);
+
+  return cards;
 }
 
 export async function updateCollection(
@@ -111,6 +122,9 @@ export async function updateCollection(
 }
 
 export async function deleteCollection(id: string) {
+  const deletedCards = await db
+    .delete(publicCards)
+    .where(eq(publicCards.collectionId, id));
   const data = await db.delete(collections).where(eq(collections.id, id));
   revalidatePath("/collections");
   revalidatePath(`/collections/${id}`);

@@ -7,7 +7,12 @@ import {
   permanentMarker,
   rowdies,
 } from "@/app/ui/fonts";
-import { Attributes, FormEntry } from "../../types/cardTypes";
+import {
+  Attributes,
+  CardType,
+  ConvertedCardType,
+  FormEntry,
+} from "../../types/cardTypes";
 
 export function getFontClass(font: string): string {
   switch (font) {
@@ -62,4 +67,42 @@ export function AttributesToFormEntries(attributes: Attributes): FormEntry[] {
     formFields.push(formField);
   }
   return formFields;
+}
+
+export function convertCard(card: CardType): ConvertedCardType {
+  return {
+    id: card.id,
+    title: {
+      value: card.title!,
+    },
+    image: {
+      url: card.image!,
+      layout: card.imageLayout,
+    },
+    description: {
+      value: card.description!,
+    },
+    attributes: card.attributes && JSON.parse(card.attributes),
+    category: {
+      value: card.category!,
+    },
+    settings: {
+      font1: card.font1,
+      font2: card.font2,
+      border: {
+        color: card.borderColor,
+        radius: card.borderRadius,
+      },
+      texture: {
+        background: card.textureBackground,
+        content: card.textureContent,
+      },
+      color: {
+        background: card.colorBackground,
+        content: card.colorContent,
+        text: card.colorText,
+      },
+    },
+    rarity: card.rarity,
+  };
 }

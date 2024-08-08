@@ -1,4 +1,3 @@
-import { Button } from "@/components/button";
 import CardsList from "@/components/card-list";
 import Link from "next/link";
 import { getCards } from "../../../actions/cardActions";
@@ -17,8 +16,8 @@ export default async function Workshop() {
               {`${cards.length}/7`}
             </div>
             {cards.length < 7 ? (
-              <Link className="my-8 mx-4" href={"/workshop/edit-card"}>
-                <Button>Create Card</Button>
+              <Link className="button my-8 mx-4" href={"/workshop/edit-card"}>
+                Create Card
               </Link>
             ) : null}
           </li>

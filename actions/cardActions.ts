@@ -8,6 +8,7 @@ import { CardType, ConvertedCardType } from "../types/cardTypes";
 import { eq } from "drizzle-orm";
 import { backendClient } from "@/lib/edgestore-server";
 import { currentUser } from "@clerk/nextjs/server";
+import { convertCard } from "@/utils/utils";
 
 export async function getCards(): Promise<ConvertedCardType[]> {
   const user = await currentUser();
@@ -129,44 +130,6 @@ export async function deleteCard(id: string) {
   revalidatePath("/workshop");
   revalidatePath(`/cards/${id}`);
   redirect("/workshop");
-}
-
-function convertCard(card: CardType): ConvertedCardType {
-  return {
-    id: card.id,
-    title: {
-      value: card.title!,
-    },
-    image: {
-      url: card.image!,
-      layout: card.imageLayout,
-    },
-    description: {
-      value: card.description!,
-    },
-    attributes: card.attributes && JSON.parse(card.attributes),
-    category: {
-      value: card.category!,
-    },
-    settings: {
-      font1: card.font1,
-      font2: card.font2,
-      border: {
-        color: card.borderColor,
-        radius: card.borderRadius,
-      },
-      texture: {
-        background: card.textureBackground,
-        content: card.textureContent,
-      },
-      color: {
-        background: card.colorBackground,
-        content: card.colorContent,
-        text: card.colorText,
-      },
-    },
-    rarity: card.rarity,
-  };
 }
 
 async function getCardFromForm(formData: FormData) {

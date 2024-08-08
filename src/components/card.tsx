@@ -1,13 +1,13 @@
 import { getFontClass, getRarityColors } from "@/utils/utils";
 import { ConvertedCardType } from "../../types/cardTypes";
+import { forwardRef, MutableRefObject, RefObject } from "react";
 
-export default function Card({
-  data: card,
-  width,
-}: {
+type CardProps = {
   data: ConvertedCardType;
   width?: number;
-}) {
+};
+
+export default function Card({ data: card, width }: CardProps) {
   const initialWidth = 300;
   const initialHeight = 430;
 

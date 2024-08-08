@@ -1,3 +1,5 @@
+import { Spinner } from "@nextui-org/spinner";
+
 export default function Home() {
   return (
     <main className="w-full h-full flex-grow flex justify-center items-center">

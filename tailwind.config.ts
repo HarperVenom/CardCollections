@@ -1,5 +1,6 @@
 import { nextui } from "@nextui-org/theme";
 import type { Config } from "tailwindcss";
+import { PluginAPI } from "tailwindcss/types/config";
 
 const config: Config = {
   content: [
@@ -23,10 +24,20 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       gridTemplateColumns: {
-        auto: "repeat(auto-fill, 230px)",
+        auto: "repeat(auto-fill, fit-content)",
       },
     },
   },
-  plugins: [nextui()],
+  plugins: [
+    nextui(),
+    function ({ addComponents }: PluginAPI) {
+      addComponents({
+        ".button": {
+          "@apply h-[,45px] bg-primary-500 text-lg text-white py-2 px-4 rounded cursor-pointer text-nowrap":
+            {},
+        },
+      });
+    },
+  ],
 };
 export default config;

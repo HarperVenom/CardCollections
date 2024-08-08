@@ -1,6 +1,6 @@
 {
-  "id": "9cda964b-54fa-4d5c-895e-9123a174cdd6",
-  "prevId": "571faa2a-fce3-4b71-a0ba-473ea655e75e",
+  "id": "8b9f14d9-52ab-4499-9e78-7a7f426d8d67",
+  "prevId": "6dd25d8c-e9f6-410c-89d8-4bc18e2ddd2d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -40,6 +40,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "imageLayout": {
+          "name": "imageLayout",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -70,6 +76,30 @@
           "primaryKey": false,
           "notNull": true
         },
+        "borderColor": {
+          "name": "borderColor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "borderRadius": {
+          "name": "borderRadius",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "textureBackground": {
+          "name": "textureBackground",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "textureContent": {
+          "name": "textureContent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "color-background": {
           "name": "color-background",
           "type": "text",
@@ -96,7 +126,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "cards_authorId_users_id_fk": {
+          "name": "cards_authorId_users_id_fk",
+          "tableFrom": "cards",
+          "tableTo": "users",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -111,8 +155,20 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "authorId": {
-          "name": "authorId",
+        "ownerId": {
+          "name": "ownerId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -126,7 +182,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "collections_ownerId_users_id_fk": {
+          "name": "collections_ownerId_users_id_fk",
+          "tableFrom": "collections",
+          "tableTo": "users",
+          "columnsFrom": [
+            "ownerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -156,13 +226,59 @@
         },
         "collectionId": {
           "name": "collectionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cardId": {
+          "name": "cardId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "publicCards_authorId_users_id_fk": {
+          "name": "publicCards_authorId_users_id_fk",
+          "tableFrom": "publicCards",
+          "tableTo": "users",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "publicCards_collectionId_collections_id_fk": {
+          "name": "publicCards_collectionId_collections_id_fk",
+          "tableFrom": "publicCards",
+          "tableTo": "collections",
+          "columnsFrom": [
+            "collectionId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "publicCards_cardId_cards_id_fk": {
+          "name": "publicCards_cardId_cards_id_fk",
+          "tableFrom": "publicCards",
+          "tableTo": "cards",
+          "columnsFrom": [
+            "cardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -172,10 +288,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "imgUrl": {
+          "name": "imgUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "balance": {
+          "name": "balance",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "default": 100
         }
       },
       "indexes": {},

@@ -1,1 +1,0 @@
-ALTER TABLE "users" ALTER COLUMN "balance" SET DEFAULT 100;

@@ -1,0 +1,1 @@
+ALTER TABLE "publicCards" ALTER COLUMN "cardId" SET DATA TYPE uuid;

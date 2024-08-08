@@ -26,7 +26,6 @@ import {
 } from "../../../../types/cardTypes";
 import { useAuth } from "@clerk/nextjs";
 import { Spinner } from "@nextui-org/spinner";
-import { Button } from "@/components/button";
 import FormSection from "@/components/form-section";
 
 interface CardFormProps {
@@ -247,8 +246,8 @@ export default function CardForm({ formAction }: CardFormProps) {
         </FormSection>
 
         <FormSection name="Image" inputId="image">
-          <label htmlFor="image">
-            <Button>{card.image?.url ? "Change Image" : "Upload Image"}</Button>
+          <label className="button" htmlFor="image">
+            {card.image?.url ? "Change Image" : "Upload Image"}
           </label>
 
           <input
@@ -499,7 +498,7 @@ export default function CardForm({ formAction }: CardFormProps) {
         <div className="w-full h-12 flex justify-center items-center">
           {pending ? (
             <div className="mt-4">
-              <Spinner></Spinner>
+              <Spinner color="success"></Spinner>
             </div>
           ) : (
             <button
@@ -629,12 +628,10 @@ function Color({
         />
         {type !== "text" && handleImageUpload ? (
           <>
-            <label className="ml-2" htmlFor={`texture-${type}`}>
-              <Button>
-                {settings.texture && settings.texture[type]
-                  ? "Change Texture"
-                  : "Upload Texture"}
-              </Button>
+            <label className="button ml-2" htmlFor={`texture-${type}`}>
+              {settings.texture && settings.texture[type]
+                ? "Change Texture"
+                : "Upload Texture"}
             </label>
             <input
               readOnly

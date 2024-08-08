@@ -7,8 +7,8 @@ export default function CollectionDeleteButton({ id }: { id: string }) {
   const [pending, setPending] = useState(false);
   return (
     <button
-      className="bg-red-500 text-white text-lg 
-          mx-2 px-8 py-2 rounded disabled:opacity-50"
+      className="button bg-red-500 disabled:opacity-50"
+      color="red"
       disabled={pending}
       onClick={() => {
         setPending(true);
