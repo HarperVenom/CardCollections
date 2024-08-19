@@ -9,7 +9,7 @@ export default async function EditCard({ params }: { params: { id: string } }) {
   const templates = [] as ConvertedCardType[];
 
   return (
-    <div className="bg-gray-300">
+    <div className="bg-gray-200">
       <CardProvider initialCard={card} templates={templates}>
         <CardEditor action="update"></CardEditor>
       </CardProvider>

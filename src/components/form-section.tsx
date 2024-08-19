@@ -16,7 +16,7 @@ export default function FormSection({
       <div className="w-full max-w-[300px] flex flex-col items-center">
         <label
           className="font-bold text-center text-2xl absolute 
-        top-0 -translate-y-2/3 bg-zinc-300 px-2 text-zinc-500 self-start"
+        top-0 -translate-y-2/3 bg-zinc-200 px-2 text-zinc-500 self-start"
           htmlFor={inputId}
         >
           {name}

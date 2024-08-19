@@ -19,7 +19,7 @@ import Coin from "@/assets/coin";
 
 export default function NavLinks({ user }: { user: User | null }) {
   const pathName = usePathname();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState<number>(0);
   const [menuOpened, setMenuOpened] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);

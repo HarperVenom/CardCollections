@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import db from "../db/drizzle";
-import { cards as cardsTable } from "../db/schema";
+import { cards as cardsTable, publicCards } from "../db/schema";
 import { CardType, ConvertedCardType } from "../types/cardTypes";
 import { eq } from "drizzle-orm";
 import { backendClient } from "@/lib/edgestore-server";
@@ -126,7 +126,8 @@ export async function updateCard(
 }
 
 export async function deleteCard(id: string) {
-  const data = await db.delete(cardsTable).where(eq(cardsTable.id, id));
+  await db.delete(publicCards).where(eq(publicCards.cardId, id));
+  await db.delete(cardsTable).where(eq(cardsTable.id, id));
   revalidatePath("/workshop");
   revalidatePath(`/cards/${id}`);
   redirect("/workshop");

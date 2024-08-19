@@ -60,6 +60,7 @@ export async function getCollection(id: string): Promise<CollectionType> {
     .from(collections)
     .where(eq(collections.id, id))
     .limit(1);
+  revalidatePath("/collections");
   return data;
 }
 
@@ -78,8 +79,6 @@ export async function getCollectionСards(
     .innerJoin(sq, eq(cardsTable.id, sq.cardId));
 
   const cards = data.map((card) => convertCard(card.cards as CardType));
-
-  console.log(cards);
 
   return cards;
 }
